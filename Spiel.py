@@ -39,6 +39,8 @@ class Spieler:
                                 Miete = SpielFeld.Feld[position].Mieten(self.wurf, True)
                             else:
                                 Miete = SpielFeld.Feld[position].Mieten(self.wurf, False)
+                        elif SpielFeld.Feld[position].kartentyp == "Bahnhof":
+                            pass
                         else:
                             Miete = SpielFeld.Feld[position].Mieten()
                         i.Geldaendern(Miete)

@@ -60,7 +60,7 @@ class Werke(HausKarten):
         self.besitzer = ""
         self.kartentyp = "Werk"
 
-    def Bebaubaubar(self):
+    def Bebaubar(self):
         return False
 
     def Mieten(self, Wurf, BesitzervonAllen):
@@ -68,3 +68,22 @@ class Werke(HausKarten):
             return (Wurf * 10)
         else:
             return (Wurf * 4)
+
+class Bahnhoefe(HausKarten):
+    def __init__(self):
+        self.preis = 200
+        self.besitzer = ""
+        self.kartentyp = "Bahnhof"
+
+        def Bebaubar(self):
+            return False
+
+        def Mieten(self, AnzahlImBesitz):
+            if AnzahlImBesitz == 1:
+                return 25
+            elif AnzahlImBesitz == 2:
+                return 50
+            elif AnzahlImBesitz == 3:
+                return 100
+            elif AnzahlImBesitz == 4:
+                return 200
