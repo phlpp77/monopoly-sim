@@ -44,7 +44,7 @@ class Spieler:
                         else:
                             Miete = SpielFeld.Feld[position].Mieten()
                         i.Geldaendern(Miete)
-                        self.Geldaendern(Miete)
+                        self.Geldaendern(-(Miete))
                         break
 
     def Kaufentscheidung(self):

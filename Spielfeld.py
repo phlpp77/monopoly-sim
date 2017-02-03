@@ -25,10 +25,10 @@ class SpielFeld:
     Parkstrasse = HausKarten(350, [35, 175, 500, 1100, 1300, 1500], 200)
     Schlossallee = HausKarten(400, [50, 200, 600, 1400, 1700, 2000], 200)
     #Bahnhoefe
-    Suedbahnhof = HausKarten(200, [25], 0)
-    Westbahnhof = HausKarten(200, [25], 0)
-    Nordbahnhof = HausKarten(200, [25], 0)
-    Hauptbahnhof = HausKarten(200, [25], 0)
+    Suedbahnhof = Bahnhoefe()
+    Westbahnhof = Bahnhoefe()
+    Nordbahnhof = Bahnhoefe()
+    Hauptbahnhof = Bahnhoefe()
     #Werke
     Elektrizitaetswerk = Werke()
     Wasserwerk = Werke()
