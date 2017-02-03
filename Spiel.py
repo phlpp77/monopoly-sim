@@ -13,7 +13,7 @@ class Spieler:
         return self.geld
 
     def Geldaendern(self, Betrag):
-        self.geld = self.geld + Betrag
+        self.geld += Betrag
 
     def Position(self):
         return self.pos
@@ -29,7 +29,7 @@ class Spieler:
         if feld.Kaufbar() == True:
             if besitzer == "":
                 self.Kaufentscheidung()
-            elif besitzer == self.name and feld.Bebaubar == True:
+            elif besitzer == self.name and feld.Bebaubar() == True:
                 self.Bauentscheidung()
             else:
                 for i in neuesSpiel.spiel:
