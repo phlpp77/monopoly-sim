@@ -9,10 +9,12 @@ class HausKarten:
         self.besitzer = ""
         self.kartentyp = "Haus"
 
-    def Kaufbar(self):
+    @staticmethod
+    def Kaufbar():
         return True
 
-    def Bebaubar(self):
+    @staticmethod
+    def Bebaubar():
         return True
 
     def Besitzer(self):
@@ -31,15 +33,17 @@ class HausKarten:
         return self.mieten[self.Haeuser]
 
 
-class nichtHaus():
+class nichtHaus:
     def __init__(self, Typ):
         self.typ = Typ
         self.kartentyp = "anderes"
 
-    def Bebaubar(self):
+    @staticmethod
+    def Bebaubar():
         return False
 
-    def Kaufbar(self):
+    @staticmethod
+    def Kaufbar():
         return False
 
     def Besitzer(self):
@@ -62,14 +66,15 @@ class Werke(HausKarten):
         self.kartentyp = "Werk"
         self.farbe = 1
 
-    def Bebaubar(self):
+    @staticmethod
+    def Bebaubar():
         return False
 
     def Mieten(self, Wurf, Anzahl):
         if Anzahl == 1:
-            return (Wurf * 10)
+            return Wurf * 10
         else:
-            return (Wurf * 4)
+            return Wurf * 4
 
 
 class Bahnhoefe(HausKarten):
@@ -79,7 +84,8 @@ class Bahnhoefe(HausKarten):
         self.kartentyp = "Bahnhof"
         self.farbe = 0
 
-    def Bebaubar(self):
+    @staticmethod
+    def Bebaubar():
         return False
 
     def Mieten(self, AnzahlimBesitz):

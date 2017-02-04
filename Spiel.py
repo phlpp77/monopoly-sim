@@ -24,21 +24,21 @@ class Spieler:
 
     def Feldchecken(self):
         # um unnoetigen Code zu verhindern werden oft gebrauchte Funktionen als Variablen abgespeichert
-        feld = SpielFeld.Feld[self.Position()]
-        besitzer = feld.Besitzer()
+        position = SpielFeld.Feld[self.pos]
+        besitzer = position.Besitzer()
 
         # Gucken ob das Feld kaufbar ist (HausKarten, Werke und Bahnhoefe)
-        if feld.Kaufbar() == True:
+        if position.Kaufbar() == True:
             # wenn das Feld noch keinem gehoert wird entschieden ob gekauft werden soll
             if besitzer == "":
                 self.Kaufentscheidung()
 
             # wenn das Feld einem selbst gehoert und bebaubar ist wird entschieden, ob ein Haus gebaut werden soll
-            elif besitzer == self.name and feld.Bebaubar() is True:
+            elif besitzer == self.name and position.Bebaubar() is True:
                 # ueberprufen ob man alle 3 Felder besitzt so dass man bauen kann
-                if self.AnzahlinBesitz[feld.farbe] == neuesSpiel.feldhaeufigkeiten[feld.farbe]:
+                if self.AnzahlinBesitz[position.farbe] == neuesSpiel.feldhaeufigkeiten[position.farbe]:
                     # man kann nur 4 Haeuser und 1 Hotel haben, also insgesamt 5 Mal bauen
-                    if feld.Haeuser < 5:
+                    if position.Haeuser < 5:
                         self.Bauentscheidung()
 
             # Feld gehoert dem Spieler aber ist nicht bebaubar, also wird nichts unternommen
@@ -50,17 +50,19 @@ class Spieler:
                 # nachgucken welchem Spieler das Feld gehoert
                 for i in neuesSpiel.spiel:
                     if i.name == besitzer:
+
                         # Unterscheidung zwischen Werken, Bahnhoefen und normalen Haeusern, weil jeder Typ andere
                         # Argumente für die Mieten() Methode braucht
-                        if feld.kartentyp == "Werk":
-                            Miete = feld.Mieten(self.wurf, i.AnzahlinBesitz)
-                        elif feld.kartentyp == "Bahnhof":
-                            Miete = feld.Mieten(i.AnzahlinBesitz)
-                            print(Miete)
+                        if position.kartentyp == "Werk":
+                            Miete = position.Mieten(self.wurf, i.AnzahlinBesitz)
+
+                        elif position.kartentyp == "Bahnhof":
+                            Miete = position.Mieten(i.AnzahlinBesitz[0])
+
                         else:
-                            Miete = feld.Mieten()
-                            if self.AnzahlinBesitz[feld.farbe] == neuesSpiel.feldhaeufigkeiten[
-                                feld.farbe] and feld.Haeuser == 0:
+                            Miete = position.Mieten()
+                            if self.AnzahlinBesitz[position.farbe] == neuesSpiel.feldhaeufigkeiten[
+                                position.farbe] and position.Haeuser == 0:
                                 Miete = Miete * 2
 
                         # Bezahlen der Miete, Abziehen der Miete vom eigenen Konto
@@ -76,19 +78,20 @@ class Spieler:
             self.AnzahlinBesitz[position.farbe] += 1
 
     def Bauentscheidung(self):
+        position = SpielFeld.Feld[self.pos]
         if randint(1, 2) == 1:
-            SpielFeld.Feld[self.pos].Bauen()
-            self.Geldaendern(-(SpielFeld.Feld[self.pos].baukosten))
+            position.Bauen()
+            self.Geldaendern(-position.baukosten)
 
     def Wuerfeln(self):
         wuerfel1 = randint(1, 6)
         wuerfel2 = randint(1, 6)
         self.wurf = wuerfel1 + wuerfel2
         laenge = len(SpielFeld.Feld)
+        self.Positionaendern(self.wurf)
         # Ueberpruefen ob es ein Pasch ist
         if wuerfel1 == wuerfel2:
             self.Wuerfeln()
-        self.Positionaendern(self.wurf)
         if self.pos >= laenge:
             self.Positionaendern(-laenge)
             self.geld += 200
@@ -112,7 +115,14 @@ class Spiel:
                 i.Feldchecken()
                 print("Name:", i.name)
                 print("Geld:", i.Geld())
-                print()
+                # print()
+                if i.geld < 1000:
+                    print(i.name, "ist aus dem Spiel")
+                    del self.spiel[self.spiel.index(i)]
+                if len(self.spiel) == 1:
+                    Gewinnerstehtnichtfest = False
+        print()
+        print(self.spiel[0].name, "ist der Gewinner mit ", self.spiel[0].geld, "Euro")
 
 
 # Setup
