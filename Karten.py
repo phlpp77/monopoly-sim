@@ -1,8 +1,9 @@
 class HausKarten:
-    def __init__(self, Preis, Mieten, Baukosten):
+    def __init__(self, Preis, Mieten, Baukosten, Farbe):
         self.preis = Preis
         self.mieten = Mieten
         self.baukosten = Baukosten
+        self.farbe = Farbe
 
         self.Haeuser = 0
         self.besitzer = ""
@@ -59,12 +60,13 @@ class Werke(HausKarten):
         self.preis = 150
         self.besitzer = ""
         self.kartentyp = "Werk"
+        self.farbe = 1
 
     def Bebaubar(self):
         return False
 
-    def Mieten(self, Wurf, BesitzervonAllen):
-        if BesitzervonAllen:
+    def Mieten(self, Wurf, Anzahl):
+        if Anzahl == 1:
             return (Wurf * 10)
         else:
             return (Wurf * 4)
@@ -75,6 +77,7 @@ class Bahnhoefe(HausKarten):
         self.preis = 200
         self.besitzer = ""
         self.kartentyp = "Bahnhof"
+        self.farbe = 0
 
     def Bebaubar(self):
         return False
