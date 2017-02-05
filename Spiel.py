@@ -71,14 +71,25 @@ class Spieler:
 
     def Kaufentscheidung(self):
         position = SpielFeld.Feld[self.pos]
-        if randint(1, 2) == 1:
-            position.gekauft(self.name)
-            self.geld -= position.preis
-            self.AnzahlinBesitz[position.farbe] += 1
+        if randint(1, 100) <= 50:
+            self.Kaufen()
+
+        elif self.AnzahlinBesitz[position.farbe] == neuesSpiel.feldhaeufigkeiten[position.farbe]-1:
+            self.Kaufen()
+        #wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
+        elif self.AnzahlinBesitz[position.farbe] == 1:
+            if randint(1,100) <= 80:
+                self.Kaufen()
+
+    def Kaufen(self):
+        position = SpielFeld.Feld[self.pos]
+        position.gekauft(self.name)
+        self.geld -= position.preis
+        self.AnzahlinBesitz[position.farbe] += 1
 
     def Bauentscheidung(self):
         position = SpielFeld.Feld[self.pos]
-        if randint(1, 2) == 1:
+        if randint(1, 100) == 90:
             position.Bauen()
             self.Geldaendern(-position.baukosten)
 
@@ -129,10 +140,11 @@ class Spiel:
                 # wenn nur noch 1 Spieler im Spiel ist ist das Spiel zuende, die Schleife wird beendet
                 if len(self.spiel) == 1:
                     Gewinnerstehtnichtfest = False
+
         print()
         print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
 
 
 # Setup
-neuesSpiel = Spiel(["Spieler1", "Spieler2", "Spieler3", "Spieler4"], 10000, 1)
+neuesSpiel = Spiel(["Spieler1", "Spieler2", "Spieler3", "Spieler4"], 1500, 0)
 neuesSpiel.Schleife()
