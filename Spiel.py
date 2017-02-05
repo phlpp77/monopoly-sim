@@ -8,16 +8,14 @@ class Spieler:
         self.geld = Anfangsgeld
         self.pos = AnfangsPos
         self.name = Name
-        self.AnzahlinBesitz = [0] * 9
+        self.wurf = 0
+        self.AnzahlinBesitz = [0] * 10
 
     def Geld(self):
         return self.geld
 
     def Geldaendern(self, Betrag):
         self.geld += Betrag
-
-    def Position(self):
-        return self.pos
 
     def Positionaendern(self, neuePos):
         self.pos += neuePos
@@ -28,7 +26,7 @@ class Spieler:
         besitzer = position.Besitzer()
 
         # Gucken ob das Feld kaufbar ist (HausKarten, Werke und Bahnhoefe)
-        if position.Kaufbar() == True:
+        if position.Kaufbar() is True:
             # wenn das Feld noch keinem gehoert wird entschieden ob gekauft werden soll
             if besitzer == "":
                 self.Kaufentscheidung()
@@ -54,20 +52,21 @@ class Spieler:
                         # Unterscheidung zwischen Werken, Bahnhoefen und normalen Haeusern, weil jeder Typ andere
                         # Argumente für die Mieten() Methode braucht
                         if position.kartentyp == "Werk":
-                            Miete = position.Mieten(self.wurf, i.AnzahlinBesitz)
+                            miete = position.Mieten(self.wurf, i.AnzahlinBesitz)
 
                         elif position.kartentyp == "Bahnhof":
-                            Miete = position.Mieten(i.AnzahlinBesitz[0])
+                            miete = position.Mieten(i.AnzahlinBesitz[0])
 
                         else:
-                            Miete = position.Mieten()
-                            if self.AnzahlinBesitz[position.farbe] == neuesSpiel.feldhaeufigkeiten[
-                                position.farbe] and position.Haeuser == 0:
-                                Miete = Miete * 2
+                            miete = position.Mieten()
+                            farbe = position.farbe
+                            haeuser = position.Haeuser
+                            if self.AnzahlinBesitz[farbe] == neuesSpiel.feldhaeufigkeiten[farbe] and haeuser == 0:
+                                miete *= 2
 
                         # Bezahlen der Miete, Abziehen der Miete vom eigenen Konto
-                        i.Geldaendern(Miete)
-                        self.Geldaendern(-(Miete))
+                        i.Geldaendern(miete)
+                        self.Geldaendern(-miete)
                         break
 
     def Kaufentscheidung(self):
@@ -115,14 +114,23 @@ class Spiel:
                 i.Feldchecken()
                 print("Name:", i.name)
                 print("Geld:", i.Geld())
-                # print()
-                if i.geld < 1000:
+                print()
+
+                # wenn Spieler unter 1 Euro hat wird er aus Spiel entfernt und seine Strassen wieder kaufbar gemacht
+                if i.geld < 1:
                     print(i.name, "ist aus dem Spiel")
+                    for x in SpielFeld.Feld:
+                        if x.kartentyp != "anderes":
+                            if x.besitzer == i.name:
+                                x.besitzer = ""
+                                x.Haeuser = 0
                     del self.spiel[self.spiel.index(i)]
+
+                # wenn nur noch 1 Spieler im Spiel ist ist das Spiel zuende, die Schleife wird beendet
                 if len(self.spiel) == 1:
                     Gewinnerstehtnichtfest = False
         print()
-        print(self.spiel[0].name, "ist der Gewinner mit ", self.spiel[0].geld, "Euro")
+        print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
 
 
 # Setup
