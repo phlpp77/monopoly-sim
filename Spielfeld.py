@@ -44,7 +44,7 @@ class SpielFeld:
     InsGefaengnis = nichtHaus("Ins Gefaengnis")
 
     # alle Karten in eine Liste packen
-    Feld = [Badstrasse, Gemeinschaftsfeld, Turmstrasse, Einkommenssteuer, Suedbahnhof, Chausseestrasse, Ereignisfeld,
+    Feld = [Los, Badstrasse, Gemeinschaftsfeld, Turmstrasse, Einkommenssteuer, Suedbahnhof, Chausseestrasse, Ereignisfeld,
             Elisenstrasse, Poststrasse, Gefaengnis, Seestrasse, Elektrizitaetswerk, Hafenstrasse, NeueStrasse,
             Westbahnhof, MuenchnerStrasse, Gemeinschaftsfeld, WienerStrasse, BerlinerStrasse, FreiParken,
             Theaterstrasse, Ereignisfeld, Museumsstrasse, Opernplatz, Nordbahnhof, Lessingstrasse, Schillerstrasse,
