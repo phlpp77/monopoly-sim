@@ -10,6 +10,7 @@ class Spieler:
         self.name = Name
         self.wurf = 0
         self.AnzahlinBesitz = [0] * 10
+        self.imGefaengnis = False
 
     def Geld(self):
         return self.geld
@@ -69,16 +70,43 @@ class Spieler:
                         self.Geldaendern(-miete)
                         break
 
+        # wenn das Feld nicht kaufbar ist, ist es eine Sonderkarte
+        else:
+            typ = position.typ
+            if typ == "Ins Gefaengnis":
+                self.pos = 9
+                self.imGefaengnis = True
+
+            # nachdem man ins Gefaengnis kommt darf man sofort probieren raus zu kommen
+            if typ == "Gefaengnis" and self.imGefaengnis is True:
+                self.GefaengnisWuerfeln()
+
+            # auf Frei Parken kriegt man alle Abgaben aus den Steuern und Ereignis/Gemeinschaftskarten
+            elif typ == "Frei Parken":
+                self.Geldaendern(neuesSpiel.abgaben)
+                neuesSpiel.abgaben = 0
+
+            elif typ == "Einkommenssteuer":
+                self.Geldaendern(-200)
+                neuesSpiel.abgaben += 200
+            elif typ == "Zusatzsteuer":
+                self.Geldaendern(-100)
+                neuesSpiel.abgaben += 100
+
+            # wenn man auf Los kommt kriegt man 2x den ueblichen Betrag
+            elif typ == "Los":
+                self.Geldaendern(200)
+
     def Kaufentscheidung(self):
         position = SpielFeld.Feld[self.pos]
         if randint(1, 100) <= 50:
             self.Kaufen()
 
-        elif self.AnzahlinBesitz[position.farbe] == neuesSpiel.feldhaeufigkeiten[position.farbe]-1:
+        elif self.AnzahlinBesitz[position.farbe] == neuesSpiel.feldhaeufigkeiten[position.farbe] - 1:
             self.Kaufen()
-        #wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
+        # wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
         elif self.AnzahlinBesitz[position.farbe] == 1:
-            if randint(1,100) <= 80:
+            if randint(1, 100) <= 80:
                 self.Kaufen()
 
     def Kaufen(self):
@@ -106,26 +134,44 @@ class Spieler:
             self.Positionaendern(-laenge)
             self.geld += 200
 
+    def GefaengnisWuerfeln(self):
+        i = 0
+        self.imGefaengnis = True
+
+        # man hat pro Runde 3 Versuche um aus dem Gefaengnis zu kommen
+        while i < 3 and self.imGefaengnis is True:
+            wurf1 = randint(1, 6)
+            wurf2 = randint(1, 6)
+            # man kommt nur frei wenn man einen Pasch wuerfelt
+            if wurf1 == wurf2:
+                self.Positionaendern(wurf1 + wurf2)
+                self.Wuerfeln()
+                self.imGefaengnis = False
+            i += 1
+
 
 class Spiel:
     # Definition von den Spielern und anderen Variablen
     def __init__(self, spieler, Startgeld, StartPos):
         self.spiel = []
+        # alle Teilnehmer in eine Liste eintragen
         for i in spieler:
             i = Spieler(i, 1, Startgeld, StartPos)
             self.spiel.append(i)
         self.feldhaeufigkeiten = [4, 2, 2, 3, 3, 3, 3, 3, 3, 2]
+        self.abgaben = 0
 
     # die verschiedenen Spieler spielen solange bis der Sieger fest steht
     def Schleife(self):
         Gewinnerstehtnichtfest = True
         while Gewinnerstehtnichtfest:
             for i in self.spiel:
-                i.Wuerfeln()
+                if i.imGefaengnis is False:
+                    i.Wuerfeln()
                 i.Feldchecken()
-                print("Name:", i.name)
-                print("Geld:", i.Geld())
-                print()
+                # print("Name:", i.name)
+                # print("Geld:", i.Geld())
+                # print()
 
                 # wenn Spieler unter 1 Euro hat wird er aus Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:
