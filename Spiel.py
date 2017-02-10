@@ -103,31 +103,6 @@ class Spieler:
             elif typ == "Los":
                 self.Geldaendern(200)
 
-            elif typ == "Ereignisfeld":
-                # Ablagestapel
-                altelisteEreignis = []
-                # ziehene einer Karte aus der Liste
-                ereignis = randint(0, 9)
-
-                # eigentliches Ziehen der Karten und Ausführen; Karten werden auf den Ablagestapel gelegt
-                def ziehen():
-                    ereignisliste[ereignis]
-                    altelisteEreignis.append(ereignisliste[ereignis])
-                    ereignisliste.remove(ereignis)
-
-                # prüfen, ob der Kartenstapel noch vorhanden ist, dann wird gezogen
-                if ereignis <= len(ereignisliste):
-                    ziehen()
-                else:
-                    while ereignis > len(ereignisliste):
-                        ereignis = - 1
-                    ziehen()
-
-                # Ablagestapel wieder ins Spiel bringen, wenn der Stapel leer ist
-                if not ereignisliste:
-                    ereignisliste = altelisteEreignis
-                    altelisteEreignis = []
-
 
     def Kaufentscheidung(self):
         position = SpielFeld.Feld[self.pos]
@@ -198,9 +173,8 @@ class Spiel:
         self.feldhaeufigkeiten = [4, 2, 2, 3, 3, 3, 3, 3, 3, 2]
         self.abgaben = 0
 
-
+    # die verschiedenen Spieler spielen solange bis der Sieger fest steht
     def Schleife(self):
-        # die verschiedenen Spieler spielen solange bis der Sieger fest steht
         Gewinnerstehtnichtfest = True
         while Gewinnerstehtnichtfest:
             for i in self.spiel:
