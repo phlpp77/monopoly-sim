@@ -2,6 +2,7 @@ from Spielfeld import SpielFeld
 from random import randint
 
 
+
 class Spieler:
     def __init__(self, Name, Spielfigur, Anfangsgeld, AnfangsPos):
         self.figur = Spielfigur
@@ -12,14 +13,18 @@ class Spieler:
         self.AnzahlinBesitz = [0] * 10
         self.imGefaengnis = False
 
+
     def Geld(self):
         return self.geld
+
 
     def Geldaendern(self, Betrag):
         self.geld += Betrag
 
+
     def Positionaendern(self, neuePos):
         self.pos += neuePos
+
 
     def Feldchecken(self):
         # um unnoetigen Code zu verhindern werden oft gebrauchte Funktionen als Variablen abgespeichert
@@ -48,6 +53,7 @@ class Spieler:
             else:
                 # nachgucken welchem Spieler das Feld gehoert
                 for i in neuesSpiel.spiel:
+                    # Wenn der Spieler gefunden wurde:
                     if i.name == besitzer:
 
                         # Unterscheidung zwischen Werken, Bahnhoefen und normalen Haeusern, weil jeder Typ andere
@@ -97,6 +103,7 @@ class Spieler:
             elif typ == "Los":
                 self.Geldaendern(200)
 
+
     def Kaufentscheidung(self):
         position = SpielFeld.Feld[self.pos]
         if randint(1, 100) <= 50:
@@ -109,17 +116,20 @@ class Spieler:
             if randint(1, 100) <= 80:
                 self.Kaufen()
 
+
     def Kaufen(self):
         position = SpielFeld.Feld[self.pos]
         position.gekauft(self.name)
         self.geld -= position.preis
         self.AnzahlinBesitz[position.farbe] += 1
 
+
     def Bauentscheidung(self):
         position = SpielFeld.Feld[self.pos]
         if randint(1, 100) == 90:
             position.Bauen()
             self.Geldaendern(-position.baukosten)
+
 
     def Wuerfeln(self):
         wuerfel1 = randint(1, 6)
@@ -133,6 +143,7 @@ class Spieler:
         if self.pos >= laenge:
             self.Positionaendern(-laenge)
             self.geld += 200
+
 
     def GefaengnisWuerfeln(self):
         i = 0
@@ -148,6 +159,7 @@ class Spieler:
                 self.Wuerfeln()
                 self.imGefaengnis = False
             i += 1
+
 
 
 class Spiel:
