@@ -75,35 +75,6 @@ class nichtHaus:
             return 100
 
 
-    def Ziehen(self):
-        if self.typ == "Ereignisfeld":
-            # Ablagestapel
-            altelisteEreignis = []
-            # ziehene einer Karte aus der Liste
-            ereignis = randint(0, 9)
-
-            # eigentliches Ziehen der Karten und Ausführen; Karten werden auf den Ablagestapel gelegt
-            def ziehen():
-                ereignisliste[ereignis]
-                altelisteEreignis.append(ereignisliste[ereignis])
-                ereignisliste.remove(ereignis)
-
-            # prüfen, ob der Kartenstapel noch vorhanden ist, dann wird gezogen
-            if ereignis <= len(ereignisliste):
-                ziehen()
-            else:
-                while ereignis > len(ereignisliste):
-                    ereignis =- 1
-                ziehen()
-
-            # Ablagestapel wieder ins Spiel bringen, wenn der Stapel leer ist
-            if not ereignisliste:
-                ereignisliste = altelisteEreignis
-                altelisteEreignis = []
-
-        elif self.typ == "Gemeinschaftsfeld":
-            gemeinschaft = randint(0, 9)
-
 
 class Werke(HausKarten):
     def __init__(self):
@@ -150,13 +121,13 @@ class Bahnhoefe(HausKarten):
             return 200
 
 
-
+''''
 class Stapelkarten():
 
-    def ereignis1(self):
+    def ereignis1():
         self.Geldaendern(-250)
 
-    def ereignis2(self):
+    def ereignis2():
         self.Geldaendern(400)
 
     global ereignisliste
@@ -172,3 +143,4 @@ class Stapelkarten():
     global gemeinschaftsliste
     gemeinschaftsliste = [gemeinschaft1(), gemeinschaft2()]
 
+'''

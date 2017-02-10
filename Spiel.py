@@ -104,6 +104,17 @@ class Spieler:
                 self.Geldaendern(200)
 
             elif typ == "Ereignisfeld":
+
+                # Ereignisstapel
+                def ereignis1(self):
+                    self.Geldaendern(-250)
+
+                def ereignis2(self):
+                    self.Geldaendern(400)
+
+                global ereignisliste
+                ereignisliste = [ereignis1(self), ereignis2(self)]
+
                 # Ablagestapel
                 altelisteEreignis = []
                 # ziehene einer Karte aus der Liste
@@ -113,20 +124,64 @@ class Spieler:
                 def ziehen():
                     ereignisliste[ereignis]
                     altelisteEreignis.append(ereignisliste[ereignis])
-                    ereignisliste.remove(ereignis)
+                    ereignisliste.remove(ereignisliste[ereignis])
 
-                # prüfen, ob der Kartenstapel noch vorhanden ist, dann wird gezogen
-                if ereignis <= len(ereignisliste):
+                # prüfen, ob der Kartenstapel noch so groß wie die Zahl ist, dann wird gezogen
+                if ereignis < len(ereignisliste):
                     ziehen()
+                # wenn nicht, wird die nächste Karte tiefere genommen
                 else:
                     while ereignis > len(ereignisliste):
-                        ereignis = - 1
+                        ereignis -= 1
+                    # da sie jetzt erst gleich groß ist und der Index ein tiefer sein muss nochmal, dann kann auch
+                    # gezogen werden
+                    ereignis -= 1
                     ziehen()
 
                 # Ablagestapel wieder ins Spiel bringen, wenn der Stapel leer ist
                 if not ereignisliste:
                     ereignisliste = altelisteEreignis
                     altelisteEreignis = []
+
+            elif typ == "Gemeinschaftsfeld":
+
+                # Gemeinschaftsstapel
+                def gemeinschaft1(self):
+                    self.Geldaendern(200)
+
+                def gemeinschaft2(self):
+                    self.pos = 3
+
+                global gemeinschaftsliste
+                gemeinschaftsliste = [gemeinschaft1(self), gemeinschaft2(self)]
+
+                # Ablagestapel
+                altelisteGemeinschaft = []
+                # ziehene einer Karte aus der Liste
+                gemeinschaft = randint(0, 9)
+
+                # eigentliches Ziehen der Karten und Ausführen; Karten werden auf den Ablagestapel gelegt
+                def ziehen():
+                    gemeinschaftsliste[gemeinschaft]
+                    altelisteGemeinschaft.append(gemeinschaftsliste[gemeinschaft])
+                    gemeinschaftsliste.remove(gemeinschaftsliste[gemeinschaft])
+
+                # prüfen, ob der Kartenstapel noch so groß wie die Zahl ist, dann wird gezogen
+                if gemeinschaft < len(gemeinschaftsliste):
+                    ziehen()
+                # wenn nicht, wird die nächste Karte tiefere genommen
+                else:
+                    while gemeinschaft > len(gemeinschaftsliste):
+                        gemeinschaft -= 1
+                    # da sie jetzt erst gleich groß ist und der Index ein tiefer sein muss nochmal, dann kann auch
+                    # gezogen werden
+                    gemeinschaft -= 1
+                    ziehen()
+
+                # Ablagestapel wieder ins Spiel bringen, wenn der Stapel leer ist
+                if not gemeinschaftsliste:
+                    gemeinschaftsliste = altelisteGemeinschaft
+                    altelisteGemeinschaft = []
 
 
     def Kaufentscheidung(self):
