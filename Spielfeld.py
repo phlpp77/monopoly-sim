@@ -25,14 +25,17 @@ class SpielFeld:
     Bahnhofstrasse = HausKarten(320, [28, 150, 450, 1000, 1200, 1400], 200, 8)
     Parkstrasse = HausKarten(350, [35, 175, 500, 1100, 1300, 1500], 200, 9)
     Schlossallee = HausKarten(400, [50, 200, 600, 1400, 1700, 2000], 200, 9)
+
     # Bahnhoefe
     Suedbahnhof = Bahnhoefe()
     Westbahnhof = Bahnhoefe()
     Nordbahnhof = Bahnhoefe()
     Hauptbahnhof = Bahnhoefe()
+
     # Werke
     Elektrizitaetswerk = Werke()
     Wasserwerk = Werke()
+
     # nichtHaus Karten
     Ereignisfeld = nichtHaus("Ereignisfeld")
     Gemeinschaftsfeld = nichtHaus("Gemeinschaftsfeld")
@@ -44,9 +47,9 @@ class SpielFeld:
     InsGefaengnis = nichtHaus("Ins Gefaengnis")
 
     # alle Karten in eine Liste packen
-    Feld = [Los, Badstrasse, Gemeinschaftsfeld, Turmstrasse, Einkommenssteuer, Suedbahnhof, Chausseestrasse, Ereignisfeld,
-            Elisenstrasse, Poststrasse, Gefaengnis, Seestrasse, Elektrizitaetswerk, Hafenstrasse, NeueStrasse,
-            Westbahnhof, MuenchnerStrasse, Gemeinschaftsfeld, WienerStrasse, BerlinerStrasse, FreiParken,
+    Feld = [Los, Badstrasse, Gemeinschaftsfeld, Turmstrasse, Einkommenssteuer, Suedbahnhof, Chausseestrasse,
+            Ereignisfeld, Elisenstrasse, Poststrasse, Gefaengnis, Seestrasse, Elektrizitaetswerk, Hafenstrasse,
+            NeueStrasse, Westbahnhof, MuenchnerStrasse, Gemeinschaftsfeld, WienerStrasse, BerlinerStrasse, FreiParken,
             Theaterstrasse, Ereignisfeld, Museumsstrasse, Opernplatz, Nordbahnhof, Lessingstrasse, Schillerstrasse,
             Wasserwerk, Goethestrasse, InsGefaengnis, Rathausplatz, Hauptstrasse, Gemeinschaftsfeld, Bahnhofstrasse,
             Hauptbahnhof, Ereignisfeld, Parkstrasse, Zusatzsteuer, Schlossallee]

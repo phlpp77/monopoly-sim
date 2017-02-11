@@ -149,10 +149,8 @@ class Spieler:
 
                 # um die ereignisliste nur ein Mal zu deklarieren
                 if 'ereignisliste' not in globals():
-                    ereignisliste = [ereignis0(self), ereignis1(self), ereignis2(self), ereignis3(self),
-                                     ereignis4(self), ereignis5(self), ereignis6(self), ereignis7(self),
-                                     ereignis8(self), ereignis9(self), ereignis10(self), ereignis11(self),
-                                     ereignis12(self), ereignis13(self)]
+                    ereignisliste = [ereignis0, ereignis1, ereignis2, ereignis3, ereignis4, ereignis5, ereignis6,
+                                     ereignis7, ereignis8, ereignis9, ereignis10, ereignis11, ereignis12, ereignis13]
                     # die Liste weird gemischt
                     shuffle(ereignisliste)
                     ekartenzaehler = 0
@@ -161,7 +159,7 @@ class Spieler:
                 if ekartenzaehler > len(ereignisliste) - 1:
                     ekartenzaehler = 0
                     shuffle(ereignisliste)
-                ereignisliste[ekartenzaehler]
+                ereignisliste[ekartenzaehler](self)
                 ekartenzaehler += 1
 
             elif typ == "Gemeinschaftsfeld":
@@ -216,21 +214,20 @@ class Spieler:
 
                 # um die gemeinschftsliste nur ein Mal zu deklarieren
                 if 'gemeinschaftsliste' not in globals():
-                    gemeinschaftsliste = [gemeinschaft0(self), gemeinschaft1(self), gemeinschaft2(self),
-                                          gemeinschaft3(self), gemeinschaft4(self), gemeinschaft5(self),
-                                          gemeinschaft6(self), gemeinschaft7(self), gemeinschaft8(self),
-                                          gemeinschaft9(self), gemeinschaft10(self), gemeinschaft11(self),
-                                          gemeinschaft12(self), gemeinschaft13(self), gemeinschaft14(self)]
+                    gemeinschaftsliste = [gemeinschaft0, gemeinschaft1, gemeinschaft2, gemeinschaft3, gemeinschaft4,
+                                          gemeinschaft5, gemeinschaft6, gemeinschaft7, gemeinschaft8, gemeinschaft9,
+                                          gemeinschaft10, gemeinschaft11, gemeinschaft12, gemeinschaft13,
+                                          gemeinschaft14]
                     # die Liste weird gemischt
                     shuffle(gemeinschaftsliste)
                     gkartenzaehler = 0
 
                 # wenn man alle Karten durch hat werden sie neu gemischt
-                if ekartenzaehler > len(ereignisliste) - 1:
-                    ekartenzaehler = 0
-                    shuffle(ereignisliste)
-                ereignisliste[ekartenzaehler]
-                ekartenzaehler += 1
+                if gkartenzaehler > len(gemeinschaftsliste) - 1:
+                    gkartenzaehler = 0
+                    shuffle(gemeinschaftsliste)
+                gemeinschaftsliste[gkartenzaehler](self)
+                gkartenzaehler += 1
 
     def Kaufentscheidung(self):
         position = SpielFeld.Feld[self.pos]
