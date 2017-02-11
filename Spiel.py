@@ -46,7 +46,7 @@ class Spieler:
             elif besitzer == self.name:
                 pass
 
-            # Feld gehoert anderem Spieler
+            # Feld gehoert anderem Spieler, also muss man Miete zahlen
             else:
                 # nachgucken welchem Spieler das Feld gehoert
                 for i in neuesSpiel.spiel:
@@ -77,10 +77,9 @@ class Spieler:
         else:
             typ = position.typ
             if typ == "Ins Gefaengnis":
-                self.pos = 9
-                self.imGefaengnis = True
+                self.insGefaengnis()
 
-            # nachdem man ins Gefaengnis kommt darf man sofort probieren raus zu kommen
+            # wenn man im Gefaengnis ist muss man einen Pasch werfen um frei zu kommen
             if typ == "Gefaengnis" and self.imGefaengnis is True:
                 self.GefaengnisWuerfeln()
 
@@ -124,7 +123,13 @@ class Spieler:
                     self.rueckevor(39)
 
                 def ereignis6(self):
-                    self.gefaengnisfrei += 1
+                    if neuesSpiel.egefangniskarte == 0:
+                        self.gefaengnisfrei += 1
+                    else:
+                        global ekartenzaehler
+                        global ereignisliste
+                        ekartenzaehler += 1
+                        neumischen(self)
 
                 def ereignis7(self):
                     self.renovieren()
@@ -156,11 +161,15 @@ class Spieler:
                     ekartenzaehler = 0
 
                 # wenn man alle Karten durch hat werden sie neu gemischt
-                if ekartenzaehler > len(ereignisliste) - 1:
-                    ekartenzaehler = 0
-                    shuffle(ereignisliste)
-                ereignisliste[ekartenzaehler](self)
-                ekartenzaehler += 1
+                def neumischen(self):
+                    global ekartenzaehler
+                    if ekartenzaehler > len(ereignisliste) - 1:
+                        ekartenzaehler = 0
+                        shuffle(ereignisliste)
+                    ereignisliste[ekartenzaehler](self)
+                    ekartenzaehler += 1
+
+                neumischen(self)
 
             elif typ == "Gemeinschaftsfeld":
                 global gemeinschaftsliste
@@ -195,7 +204,13 @@ class Spieler:
                     self.rueckevor(1)
 
                 def gemeinschaft9(self):
-                    self.gefaengnisfrei += 1
+                    if neuesSpiel.ggefaengniskarte == 0:
+                        self.gefaengnisfrei += 1
+                    else:
+                        global gkartenzaehler
+                        global gemeinschaftsliste
+                        gkartenzaehler += 1
+                        neumischen(self)
 
                 def gemeinschaft10(self):
                     self.Geldaendern(10)
@@ -223,11 +238,15 @@ class Spieler:
                     gkartenzaehler = 0
 
                 # wenn man alle Karten durch hat werden sie neu gemischt
-                if gkartenzaehler > len(gemeinschaftsliste) - 1:
-                    gkartenzaehler = 0
-                    shuffle(gemeinschaftsliste)
-                gemeinschaftsliste[gkartenzaehler](self)
-                gkartenzaehler += 1
+                def neumischen(self):
+                    global gkartenzaehler
+                    if gkartenzaehler > len(gemeinschaftsliste) - 1:
+                        gkartenzaehler = 0
+                        shuffle(gemeinschaftsliste)
+                    gemeinschaftsliste[gkartenzaehler](self)
+                    gkartenzaehler += 1
+
+                neumischen(self)
 
     def Kaufentscheidung(self):
         position = SpielFeld.Feld[self.pos]
@@ -259,34 +278,38 @@ class Spieler:
         self.wurf = wuerfel1 + wuerfel2
         laenge = len(SpielFeld.Feld)
         self.Positionaendern(self.wurf)
-        # Ueberpruefen ob es ein Pasch ist
-        if wuerfel1 == wuerfel2:
-            self.Wuerfeln()
         if self.pos >= laenge:
             self.Positionaendern(-laenge)
             self.geld += 200
+        # Ueberpruefen ob es ein Pasch ist
+        if wuerfel1 == wuerfel2:
+            self.Wuerfeln()
 
     def GefaengnisWuerfeln(self):
         i = 0
-        self.imGefaengnis = True
-
         # man hat pro Runde 3 Versuche um aus dem Gefaengnis zu kommen
         while i < 3 and self.imGefaengnis is True:
             wurf1 = randint(1, 6)
             wurf2 = randint(1, 6)
             # man kommt nur frei wenn man einen Pasch wuerfelt
             if wurf1 == wurf2:
+                self.imGefaengnis = False
                 self.Positionaendern(wurf1 + wurf2)
                 self.Wuerfeln()
-                self.imGefaengnis = False
-                i += 1
+            i += 1
 
         if self.imGefaengnis is True and self.gefaengnisfrei > 0:
             self.imGefaengnis = False
             self.gefaengnisfrei -= 1
+            if neuesSpiel.egefangniskarte == 1:
+                neuesSpiel.egefangniskarte -= 1
+            elif neuesSpiel.ggefaengniskarte == 1:
+                neuesSpiel.ggefaengniskarte -= 1
             self.Wuerfeln()
 
     def insGefaengnis(self):
+        # BUG: nach dem Zufügen von Lo zum Spielfeld haben sich alle Felder um +1 verschoben, aber hier wurdes vergessen
+        # die Pos +1 zu rechnen. Wenn man das macht kommen extrem hohe Endbetraege raus
         self.pos = 10
         self.imGefaengnis = True
 
@@ -317,6 +340,8 @@ class Spiel:
             self.spiel.append(i)
         self.feldhaeufigkeiten = [4, 2, 2, 3, 3, 3, 3, 3, 3, 2]
         self.abgaben = 0
+        self.egefangniskarte = 0
+        self.ggefaengniskarte = 0
 
     def Schleife(self):
         # die verschiedenen Spieler spielen solange bis der Sieger fest steht
@@ -329,7 +354,6 @@ class Spiel:
                 # print("Name:", i.name)
                 # print("Geld:", i.Geld())
                 # print()
-
                 # wenn Spieler unter 1 Euro hat wird er aus Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:
                     print(i.name, "ist aus dem Spiel")
@@ -348,6 +372,5 @@ class Spiel:
         print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
 
 
-# Setup
 neuesSpiel = Spiel(["Spieler1", "Spieler2", "Spieler3", "Spieler4"], 1500, 0)
 neuesSpiel.Schleife()
