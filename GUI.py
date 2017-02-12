@@ -1,16 +1,16 @@
 from Spiel import Spieler
 from Spielfeld import SpielFeld
 from tkinter import *
-
+from tkinter import messagebox
 
 class GUI:
     # Definition von den Spielern und anderen Variablen
-    def __init__(self, spieler, Startgeld, StartPos):
+    def __init__(self):
         # Fenster erstellen
         root = Tk()
         self.hauptfenster = Frame(root)
+        self.hauptfenster.pack()
         root.title("Monopoly Simulation")
-        root.geometry("1280x720")
         # Fenster mittig zentrieren
         w = 1280
         h = 720
@@ -20,12 +20,45 @@ class GUI:
         y = (hs / 2) - (h / 2)
         root.geometry("%dx%d+%d+%d" % (w, h, x, y))
         root.config(bg='lightgrey')
-
-        label = Label(self.hauptfenster, text="bla")
-        self.hauptfenster.pack()
-        label.pack()
+        # Einleitung
+        label = Label(self.hauptfenster, text="Bitte die Simulation von Monopoly konfigurieren, bevor diese gestartet wird.")
+        label.grid(row=0, columnspan=2)
+        # Konfiguration
+        Label(self.hauptfenster, text="Startkapital").grid(row=1)
+        Label(self.hauptfenster, text="Startposition").grid(row=2)
+        sk = Entry(self.hauptfenster)
+        sp = Entry(self.hauptfenster)
+        sk.grid(row=1, column=1)
+        sp.grid(row=2, column=1)
+        Label(self.hauptfenster, text="Spierleranzahl").grid(row=3)
+        sa = Scale(self.hauptfenster, from_=2, to=6, orient=HORIZONTAL)
+        sa.grid(row=3, column=1)
+        # Start / Überprüfung der Werte
+        start = Button(master=self.hauptfenster, text="Simulation starten", fg="white", command=self.starten(sk, sp, sa), bg="black")
+        start.grid(row=4, columnspan=2)
         root.mainloop()
 
+    def starten(self, sk, sp, sa):
+        if sk == "":
+            messagebox.showerror("FAIL", "Wähle bitte ein Startkapital!")
+        ske = sk.get().strip()
+        sk = int(ske)
+        if sk.get() < 1 or sk.get() > 100000 or sk.get() == "":
+            messagebox.showerror("FAIL", "Wähle ein passendes Startkapital (zwischen 1 und 100.000)")
+        """
+        try:
+            int(ske)
+            zahl = True
+        except ValueError:
+            zahl = False
+            messagebox.showerror("FAIL", "Wähle bitte eine Zahl!")
+            """
+
+
+
+
+
+    def Spiel(self, spieler, Startgeld, StartPos):
         self.spiel = []
         # alle Teilnehmer in eine Liste eintragen
         for i in spieler:
@@ -35,7 +68,6 @@ class GUI:
         self.abgaben = 0
 
     def Schleife(self):
-
         # die verschiedenen Spieler spielen solange bis der Sieger fest steht
         Gewinnerstehtnichtfest = True
         while Gewinnerstehtnichtfest:
@@ -68,5 +100,7 @@ class GUI:
         # Setup
 
 
-neuesSpiel = GUI(["Spieler1", "Spieler2", "Spieler3", "Spieler4"], 1500, 0)
-neuesSpiel.Schleife()
+neuesSpiel = GUI()
+#neuesSpiel.Schleife()
+
+# ["Spieler1", "Spieler2", "Spieler3", "Spieler4"], 1500, 0
