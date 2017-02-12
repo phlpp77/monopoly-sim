@@ -26,34 +26,46 @@ class GUI:
         # Konfiguration
         Label(self.hauptfenster, text="Startkapital").grid(row=1)
         Label(self.hauptfenster, text="Startposition").grid(row=2)
+        global sk
         sk = Entry(self.hauptfenster)
+        global sp
         sp = Entry(self.hauptfenster)
         sk.grid(row=1, column=1)
         sp.grid(row=2, column=1)
         Label(self.hauptfenster, text="Spierleranzahl").grid(row=3)
+        global sa
         sa = Scale(self.hauptfenster, from_=2, to=6, orient=HORIZONTAL)
         sa.grid(row=3, column=1)
         # Start / Überprüfung der Werte
-        start = Button(master=self.hauptfenster, text="Simulation starten", fg="white", command=self.starten(sk, sp, sa), bg="black")
+        start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, fg="white",  bg="black")
         start.grid(row=4, columnspan=2)
         root.mainloop()
 
-    def starten(self, sk, sp, sa):
-        if sk == "":
+    def starten(self):
+        # Prüfung des Startkapitals
+        self.sk = sk.get()
+        if self.sk == "":
             messagebox.showerror("FAIL", "Wähle bitte ein Startkapital!")
-        ske = sk.get().strip()
-        sk = int(ske)
-        if sk.get() < 1 or sk.get() > 100000 or sk.get() == "":
-            messagebox.showerror("FAIL", "Wähle ein passendes Startkapital (zwischen 1 und 100.000)")
-        """
-        try:
-            int(ske)
-            zahl = True
-        except ValueError:
-            zahl = False
-            messagebox.showerror("FAIL", "Wähle bitte eine Zahl!")
-            """
-
+        else:
+            ske = self.sk.strip()
+            try:
+                self.sk = int(ske)
+                if self.sk < 1 or self.sk > 100000:
+                    messagebox.showerror("FAIL", "Wähle ein passendes Startkapital (zwischen 1 und 100.000)")
+            except ValueError:
+                messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Startkapital)!")
+        # Prüfung der Startposition
+        self.sp = sp.get()
+        if self.sp == "":
+            messagebox.showerror("FAIL", "Wähle bitte ein Startposition!")
+        else:
+            ske = self.sp.strip()
+            try:
+                self.sp = int(ske)
+                if self.sp < 0 or self.sp > 39:
+                    messagebox.showerror("FAIL", "Wähle ein passendes Startposition (zwischen 0 und 39)")
+            except ValueError:
+                messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Startposition)!")
 
 
 
@@ -104,3 +116,5 @@ neuesSpiel = GUI()
 #neuesSpiel.Schleife()
 
 # ["Spieler1", "Spieler2", "Spieler3", "Spieler4"], 1500, 0
+
+#print(len(SpielFeld.Feld))
