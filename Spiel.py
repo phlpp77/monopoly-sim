@@ -23,8 +23,9 @@ class Spieler:
     def Positionaendern(self, neuePos):
         self.pos += neuePos
 
-    def Feldchecken(self):
+    def Feldchecken(self, spiel):
         # um unnoetigen Code zu verhindern werden oft gebrauchte Funktionen als Variablen abgespeichert
+        self.spiel = spiel
         position = SpielFeld.Feld[self.pos]
         besitzer = position.Besitzer()
 
@@ -37,7 +38,7 @@ class Spieler:
             # wenn das Feld einem selbst gehoert und bebaubar ist wird entschieden, ob ein Haus gebaut werden soll
             elif besitzer == self.name and position.Bebaubar() is True:
                 # ueberprufen ob man alle 3 Felder besitzt so dass man bauen kann
-                if self.AnzahlinBesitz[position.farbe] == neuesSpiel.feldhaeufigkeiten[position.farbe]:
+                if self.AnzahlinBesitz[position.farbe] == self.spiel.feldhaeufigkeiten[position.farbe]:
                     # man kann nur 4 Haeuser und 1 Hotel haben, also insgesamt 5 Mal bauen
                     if position.Haeuser < 5:
                         self.Bauentscheidung()
@@ -49,7 +50,7 @@ class Spieler:
             # Feld gehoert anderem Spieler
             else:
                 # nachgucken welchem Spieler das Feld gehoert
-                for i in neuesSpiel.spiel:
+                for i in self.spiel.spiel:
                     # Wenn der Spieler gefunden wurde:
                     if i.name == besitzer:
 
@@ -65,7 +66,7 @@ class Spieler:
                             miete = position.Mieten()
                             farbe = position.farbe
                             haeuser = position.Haeuser
-                            if self.AnzahlinBesitz[farbe] == neuesSpiel.feldhaeufigkeiten[farbe] and haeuser == 0:
+                            if self.AnzahlinBesitz[farbe] == self.spiel.feldhaeufigkeiten[farbe] and haeuser == 0:
                                 miete *= 2
 
                         # Bezahlen der Miete, Abziehen der Miete vom eigenen Konto
@@ -86,15 +87,15 @@ class Spieler:
 
             # auf Frei Parken kriegt man alle Abgaben aus den Steuern und Ereignis/Gemeinschaftskarten
             elif typ == "Frei Parken":
-                self.Geldaendern(neuesSpiel.abgaben)
-                neuesSpiel.abgaben = 0
+                self.Geldaendern(self.spiel.abgaben)
+                self.spiel.abgaben = 0
 
             elif typ == "Einkommenssteuer":
                 self.Geldaendern(-200)
-                neuesSpiel.abgaben += 200
+                self.spiel.abgaben += 200
             elif typ == "Zusatzsteuer":
                 self.Geldaendern(-100)
-                neuesSpiel.abgaben += 100
+                self.spiel.abgaben += 100
 
             # wenn man auf Los kommt kriegt man 2x den ueblichen Betrag
             elif typ == "Los":
@@ -237,7 +238,7 @@ class Spieler:
         if randint(1, 100) <= 50:
             self.Kaufen()
 
-        elif self.AnzahlinBesitz[position.farbe] == neuesSpiel.feldhaeufigkeiten[position.farbe] - 1:
+        elif self.AnzahlinBesitz[position.farbe] == self.spiel.feldhaeufigkeiten[position.farbe] - 1:
             self.Kaufen()
         # wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
         elif self.AnzahlinBesitz[position.farbe] == 1:
@@ -308,49 +309,3 @@ class Spieler:
                         self.Geldaendern(i.Haeuser * 25)
                     else:
                         self.Geldaendern(100)
-
-
-class Spiel:
-    # Definition von den Spielern und anderen Variablen
-    def __init__(self, spieler, Startgeld, StartPos):
-        self.spiel = []
-        # alle Teilnehmer in eine Liste eintragen
-        for i in spieler:
-            i = Spieler(i, 1, Startgeld, StartPos)
-            self.spiel.append(i)
-        self.feldhaeufigkeiten = [4, 2, 2, 3, 3, 3, 3, 3, 3, 2]
-        self.abgaben = 0
-
-    def Schleife(self):
-        # die verschiedenen Spieler spielen solange bis der Sieger fest steht
-        Gewinnerstehtnichtfest = True
-        while Gewinnerstehtnichtfest:
-            for i in self.spiel:
-                if i.imGefaengnis is False:
-                    i.Wuerfeln()
-                i.Feldchecken()
-                # print("Name:", i.name)
-                # print("Geld:", i.Geld())
-                # print()
-
-                # wenn Spieler unter 1 Euro hat wird er aus Spiel entfernt und seine Strassen wieder kaufbar gemacht
-                if i.geld < 1:
-                    print(i.name, "ist aus dem Spiel")
-                    for x in SpielFeld.Feld:
-                        if x.kartentyp != "anderes":
-                            if x.besitzer == i.name:
-                                x.besitzer = ""
-                                x.Haeuser = 0
-                    del self.spiel[self.spiel.index(i)]
-
-                # wenn nur noch 1 Spieler im Spiel ist ist das Spiel zuende, die Schleife wird beendet
-                if len(self.spiel) == 1:
-                    Gewinnerstehtnichtfest = False
-
-        print()
-        print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
-
-
-# Setup
-neuesSpiel = Spiel(["Spieler1", "Spieler2", "Spieler3", "Spieler4"], 1500, 0)
-neuesSpiel.Schleife()
