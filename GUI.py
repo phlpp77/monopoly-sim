@@ -10,6 +10,8 @@ class GUI:
         root = Tk()
         self.hauptfenster = Frame(root)
         self.hauptfenster.pack()
+        root.lift()
+        root.attributes("-topmost", True)
         root.title("Monopoly Simulation")
         # Fenster mittig zentrieren
         w = 1280
@@ -81,7 +83,6 @@ class GUI:
             global neuesSpiel
             neuesSpiel = Spiel(spieler, Startgeld, StartPos)
             neuesSpiel.Schleife()
-            #print(spieler)
 
 
 class Spiel:
@@ -126,8 +127,3 @@ class Spiel:
 
 
 nSpiel = GUI()
-#neuesSpiel.Schleife()
-
-# ["Spieler1", "Spieler2", "Spieler3", "Spieler4"], 1500, 0
-
-#print(len(SpielFeld.Feld))
