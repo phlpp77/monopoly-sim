@@ -70,7 +70,7 @@ class Spieler:
                                 miete *= 2
 
                         # Bezahlen der Miete, Abziehen der Miete vom eigenen Konto
-                        i.Geldaendern(miete)
+                        i.Geldaendern(miete) 
                         self.Geldaendern(-miete)
                         break
 

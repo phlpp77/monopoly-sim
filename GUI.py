@@ -43,6 +43,7 @@ class GUI:
 
     def starten(self):
         # Prüfung des Startkapitals
+        startbar = 0
         self.sk = sk.get()
         if self.sk == "":
             messagebox.showerror("FAIL", "Wähle bitte ein Startkapital!")
@@ -52,6 +53,8 @@ class GUI:
                 self.sk = int(ske)
                 if self.sk < 1 or self.sk > 100000:
                     messagebox.showerror("FAIL", "Wähle ein passendes Startkapital (zwischen 1 und 100.000)")
+                else:
+                    startbar += 1
             except ValueError:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Startkapital)!")
         # Prüfung der Startposition
@@ -64,13 +67,25 @@ class GUI:
                 self.sp = int(ske)
                 if self.sp < 0 or self.sp > 39:
                     messagebox.showerror("FAIL", "Wähle ein passendes Startposition (zwischen 0 und 39)")
+                else:
+                    startbar += 1
             except ValueError:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Startposition)!")
+        if startbar == 2:
+            anzahl = sa.get()
+            spieler = []
+            for i in range(1, anzahl + 1):
+                spieler.append("Spieler" + str(i))
+            Startgeld = self.sk
+            StartPos = self.sp
+            global neuesSpiel
+            neuesSpiel = Spiel(spieler, Startgeld, StartPos)
+            neuesSpiel.Schleife()
+            #print(spieler)
 
 
-
-
-    def Spiel(self, spieler, Startgeld, StartPos):
+class Spiel:
+    def __init__(self, spieler, Startgeld, StartPos):
         self.spiel = []
         # alle Teilnehmer in eine Liste eintragen
         for i in spieler:
@@ -109,10 +124,8 @@ class GUI:
         print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
 
 
-        # Setup
 
-
-neuesSpiel = GUI()
+nSpiel = GUI()
 #neuesSpiel.Schleife()
 
 # ["Spieler1", "Spieler2", "Spieler3", "Spieler4"], 1500, 0
