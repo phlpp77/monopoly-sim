@@ -1,60 +1,60 @@
 class HausKarten:
-    def __init__(self, Preis, Mieten, Baukosten, Farbe):
-        self.preis = Preis
-        self.mieten = Mieten
-        self.baukosten = Baukosten
-        self.farbe = Farbe
+    def __init__(self, preis, mieten, baukosten, farbe):
+        self.preis = preis
+        self.mieten = mieten
+        self.baukosten = baukosten
+        self.farbe = farbe
 
-        self.Haeuser = 0
+        self.haeuser = 0
         self.besitzer = ""
         self.kartentyp = "Haus"
 
     @staticmethod
-    def Kaufbar():
+    def kaufbar():
         return True
 
     @staticmethod
-    def Bebaubar():
+    def bebaubar():
         return True
 
-    def Besitzer(self):
+    def besitzer_abrufen(self):
         return self.besitzer
 
-    def gekauft(self, Kaeufer):
-        self.besitzer = Kaeufer
+    def gekauft(self, kaeufer):
+        self.besitzer = kaeufer
 
-    def returnHaeuser(self):
-        return self.Haeuser
+    def haeuser_abrufen(self):
+        return self.haeuser
 
-    def Bauen(self):
-        self.Haeuser += 1
+    def bauen(self):
+        self.haeuser += 1
 
-    def Mieten(self):
-        return self.mieten[self.Haeuser]
+    def mieten_abrufen(self):
+        return self.mieten[self.haeuser]
 
 
-class nichtHaus:
+class NichtHaus:
     # Alle besonderen Felder, die nicht käuflich zu erwerben sind
     # hierbei wird nur der typ übergeben, um unnötige Klassen zu vermeiden
-    def __init__(self, Typ):
-        self.typ = Typ
+    def __init__(self, typ):
+        self.typ = typ
         self.kartentyp = "anderes"
 
     @staticmethod
-    def Bebaubar():
+    def bebaubar():
         return False
 
     @staticmethod
-    def Kaufbar():
+    def kaufbar():
         return False
 
-    def Besitzer(self):
+    def besitzer_abrufen(self):
         if self.typ == "Einkommenssteuer" or self.typ == "Zusatzsteuer":
             return "Staat"
         else:
             return ""
 
-    def Mieten(self):
+    def mieten_abrufen(self):
         if self.typ == "Einkommenssteuer":
             return 200
         elif self.typ == "Zusatzsteuer":
@@ -69,14 +69,14 @@ class Werke(HausKarten):
         self.farbe = 1
 
     @staticmethod
-    def Bebaubar():
+    def bebaubar():
         return False
 
-    def Mieten(self, Wurf, Anzahl):
-        if Anzahl == 1:
-            return Wurf * 10
+    def mieten_abrufen(self, wurf, anzahl):
+        if anzahl == 1:
+            return wurf * 10
         else:
-            return Wurf * 4
+            return wurf * 4
 
 
 class Bahnhoefe(HausKarten):
@@ -87,15 +87,15 @@ class Bahnhoefe(HausKarten):
         self.farbe = 0
 
     @staticmethod
-    def Bebaubar():
+    def bebaubar():
         return False
 
-    def Mieten(self, AnzahlimBesitz):
-        if AnzahlimBesitz == 1:
+    def mieten_abrufen(self, anzahl_in_besitz):
+        if anzahl_in_besitz == 1:
             return 25
-        elif AnzahlimBesitz == 2:
+        elif anzahl_in_besitz == 2:
             return 50
-        elif AnzahlimBesitz == 3:
+        elif anzahl_in_besitz == 3:
             return 100
         else:
             return 200

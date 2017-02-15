@@ -1,105 +1,101 @@
-from Spielfeld import SpielFeld
+from Spielfeld import spielfeld
 from random import randint
 from random import shuffle
 
 
 class Spieler:
-    def __init__(self, Name, Spielfigur, Anfangsgeld, AnfangsPos):
-        self.figur = Spielfigur
-        self.geld = Anfangsgeld
-        self.pos = AnfangsPos
-        self.name = Name
+    def __init__(self, name, anfangsgeld, anfangs_pos):
+        self.geld = anfangsgeld
+        self.pos = anfangs_pos
+        self.name = name
         self.wurf = 0
-        self.AnzahlinBesitz = [0] * 10
-        self.imGefaengnis = False
+        self.anzahl_in_besitz = [0] * 10
+        self.im_gefaengnis = False
         self.gefaengnisfrei = 0
 
-    def Geld(self):
-        return self.geld
+    def geldaendern(self, betrag):
+        self.geld += betrag
 
-    def Geldaendern(self, Betrag):
-        self.geld += Betrag
+    def positionaendern(self, neue_pos):
+        self.pos += neue_pos
 
-    def Positionaendern(self, neuePos):
-        self.pos += neuePos
-
-    def Feldchecken(self, spiel):
+    def feldchecken(self, spiel):
         # um unnoetigen Code zu verhindern werden oft gebrauchte Funktionen als Variablen abgespeichert
         self.spiel = spiel
-        position = SpielFeld.Feld[self.pos]
-        besitzer = position.Besitzer()
+        position = spielfeld.feld[self.pos]
+        besitzer = position.besitzer_abrufen()
 
-        # Gucken ob das Feld kaufbar ist (HausKarten, Werke und Bahnhoefe)
-        if position.Kaufbar() is True:
-            # wenn das Feld noch keinem gehoert wird entschieden ob gekauft werden soll
+        # Gucken ob das feld kaufbar ist (HausKarten, Werke und Bahnhoefe)
+        if position.kaufbar() is True:
+            # wenn das feld noch keinem gehoert wird entschieden ob gekauft werden soll
             if besitzer == "":
-                self.Kaufentscheidung()
+                self.kaufentscheidung()
 
-            # wenn das Feld einem selbst gehoert und bebaubar ist wird entschieden, ob ein Haus gebaut werden soll
-            elif besitzer == self.name and position.Bebaubar() is True:
-                # ueberprufen ob man alle 3 Felder besitzt so dass man bauen kann
-                if self.AnzahlinBesitz[position.farbe] == self.spiel.feldhaeufigkeiten[position.farbe]:
-                    # man kann nur 4 Haeuser und 1 Hotel haben, also insgesamt 5 Mal bauen
-                    if position.Haeuser < 5:
-                        self.Bauentscheidung()
+            # wenn das feld einem selbst gehoert und bebaubar ist wird entschieden, ob ein Haus gebaut werden soll
+            elif besitzer == self.name and position.bebaubar() is True:
+                # ueberprufen ob man alle 3 felder besitzt so dass man bauen kann
+                if self.anzahl_in_besitz[position.farbe] == self.spiel.feldhaeufigkeiten[position.farbe]:
+                    # man kann nur 4 haeuser und 1 Hotel haben, also insgesamt 5 Mal bauen
+                    if position.haeuser < 5:
+                        self.bauentscheidung()
 
-            # Feld gehoert dem Spieler aber ist nicht bebaubar, also wird nichts unternommen
+            # feld gehoert dem Spieler aber ist nicht bebaubar, also wird nichts unternommen
             elif besitzer == self.name:
                 pass
 
-            # Feld gehoert anderem Spieler
+            # feld gehoert anderem Spieler
             else:
-                # nachgucken welchem Spieler das Feld gehoert
+                # nachgucken welchem Spieler das feld gehoert
                 for i in self.spiel.spiel:
                     # Wenn der Spieler gefunden wurde:
                     if i.name == besitzer:
 
-                        # Unterscheidung zwischen Werken, Bahnhoefen und normalen Haeusern, weil jeder Typ andere
+                        # Unterscheidung zwischen Werken, Bahnhoefen und normalen haeusern, weil jeder Typ andere
                         # Argumente für die Mieten() Methode braucht
                         if position.kartentyp == "Werk":
-                            miete = position.Mieten(self.wurf, i.AnzahlinBesitz)
+                            miete = position.mieten_abrufen(self.wurf, i.anzahl_in_besitz)
 
                         elif position.kartentyp == "Bahnhof":
-                            miete = position.Mieten(i.AnzahlinBesitz[0])
+                            miete = position.mieten_abrufen(i.anzahl_in_besitz[0])
 
                         else:
-                            miete = position.Mieten()
+                            miete = position.mieten_abrufen()
                             farbe = position.farbe
-                            haeuser = position.Haeuser
-                            if self.AnzahlinBesitz[farbe] == self.spiel.feldhaeufigkeiten[farbe] and haeuser == 0:
+                            haeuser = position.haeuser
+                            if self.anzahl_in_besitz[farbe] == self.spiel.feldhaeufigkeiten[farbe] and haeuser == 0:
                                 miete *= 2
 
                         # Bezahlen der Miete, Abziehen der Miete vom eigenen Konto
-                        i.Geldaendern(miete) 
-                        self.Geldaendern(-miete)
+                        i.geldaendern(miete)
+                        self.geldaendern(-miete)
                         break
 
-        # wenn das Feld nicht kaufbar ist, ist es eine Sonderkarte
+        # wenn das feld nicht kaufbar ist, ist es eine Sonderkarte
         else:
             typ = position.typ
             if typ == "Ins Gefaengnis":
                 self.pos = 9
-                self.imGefaengnis = True
+                self.im_gefaengnis = True
 
             # nachdem man ins Gefaengnis kommt darf man sofort probieren raus zu kommen
-            if typ == "Gefaengnis" and self.imGefaengnis is True:
-                self.GefaengnisWuerfeln()
+            if typ == "Gefaengnis" and self.im_gefaengnis is True:
+                self.gefaengniswuerfeln()
 
             # auf Frei Parken kriegt man alle Abgaben aus den Steuern und Ereignis/Gemeinschaftskarten
             elif typ == "Frei Parken":
-                self.Geldaendern(self.spiel.abgaben)
+                self.geldaendern(self.spiel.abgaben)
                 self.spiel.abgaben = 0
 
             elif typ == "Einkommenssteuer":
-                self.Geldaendern(-200)
+                self.geldaendern(-200)
                 self.spiel.abgaben += 200
             elif typ == "Zusatzsteuer":
-                self.Geldaendern(-100)
+                self.geldaendern(-100)
                 self.spiel.abgaben += 100
 
             # wenn man auf Los kommt kriegt man 2x den ueblichen Betrag
             elif typ == "Los":
-                self.Geldaendern(200)
+                self.geldaendern(200)
 
             elif typ == "Ereignisfeld":
                 global ekartenzaehler
@@ -107,13 +103,13 @@ class Spieler:
 
                 # Ereignisstapel
                 def ereignis0(self):
-                    self.Positionaendern(-3)
+                    self.positionaendern(-3)
 
                 def ereignis1(self):
-                    self.Geldaendern(-15)
+                    self.geldaendern(-15)
 
                 def ereignis2(self):
-                    self.Geldaendern(50)
+                    self.geldaendern(50)
 
                 def ereignis3(self):
                     self.rueckevor(11)
@@ -137,16 +133,16 @@ class Spieler:
                     self.rueckevor(15)
 
                 def ereignis10(self):
-                    self.Geldaendern(150)
+                    self.geldaendern(150)
 
                 def ereignis11(self):
-                    self.insGefaengnis()
+                    self.ins_gefaengnis()
 
                 def ereignis12(self):
-                    self.Geldaendern(-20)
+                    self.geldaendern(-20)
 
                 def ereignis13(self):
-                    self.Geldaendern(100)
+                    self.geldaendern(100)
 
                 # um die ereignisliste nur ein Mal zu deklarieren
                 if 'ereignisliste' not in globals():
@@ -169,25 +165,25 @@ class Spieler:
 
                 # Gemeinschaftsstapel
                 def gemeinschaft0(self):
-                    self.Geldaendern(200)
+                    self.geldaendern(200)
 
                 def gemeinschaft1(self):
-                    self.Geldaendern(-100)
+                    self.geldaendern(-100)
 
                 def gemeinschaft2(self):
-                    self.Geldaendern(10)
+                    self.geldaendern(10)
 
                 def gemeinschaft3(self):
-                    self.Geldaendern(20)
+                    self.geldaendern(20)
 
                 def gemeinschaft4(self):
-                    self.Geldaendern(-10)
+                    self.geldaendern(-10)
 
                 def gemeinschaft5(self):
-                    self.Geldaendern(-50)
+                    self.geldaendern(-50)
 
                 def gemeinschaft6(self):
-                    self.Geldaendern(25)
+                    self.geldaendern(25)
 
                 def gemeinschaft7(self):
                     self.rueckevor(0)
@@ -199,19 +195,19 @@ class Spieler:
                     self.gefaengnisfrei += 1
 
                 def gemeinschaft10(self):
-                    self.Geldaendern(10)
+                    self.geldaendern(10)
 
                 def gemeinschaft11(self):
-                    self.Geldaendern(-50)
+                    self.geldaendern(-50)
 
                 def gemeinschaft12(self):
-                    self.Geldaendern(100)
+                    self.geldaendern(100)
 
                 def gemeinschaft13(self):
-                    self.insGefaengnis()
+                    self.ins_gefaengnis()
 
                 def gemeinschaft14(self):
-                    self.Geldaendern(100)
+                    self.geldaendern(100)
 
                 # um die gemeinschftsliste nur ein Mal zu deklarieren
                 if 'gemeinschaftsliste' not in globals():
@@ -230,79 +226,79 @@ class Spieler:
                 gemeinschaftsliste[gkartenzaehler](self)
                 gkartenzaehler += 1
 
-    def Kaufentscheidung(self):
-        position = SpielFeld.Feld[self.pos]
+    def kaufentscheidung(self):
+        position = spielfeld.feld[self.pos]
         if randint(1, 100) <= 50:
-            self.Kaufen()
+            self.kaufen()
 
-        elif self.AnzahlinBesitz[position.farbe] == self.spiel.feldhaeufigkeiten[position.farbe] - 1:
-            self.Kaufen()
+        elif self.anzahl_in_besitz[position.farbe] == self.spiel.feldhaeufigkeiten[position.farbe] - 1:
+            self.kaufen()
         # wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
-        elif self.AnzahlinBesitz[position.farbe] == 1:
+        elif self.anzahl_in_besitz[position.farbe] == 1:
             if randint(1, 100) <= 80:
-                self.Kaufen()
+                self.kaufen()
 
-    def Kaufen(self):
-        position = SpielFeld.Feld[self.pos]
+    def kaufen(self):
+        position = spielfeld.feld[self.pos]
         position.gekauft(self.name)
         self.geld -= position.preis
-        self.AnzahlinBesitz[position.farbe] += 1
+        self.anzahl_in_besitz[position.farbe] += 1
 
-    def Bauentscheidung(self):
-        position = SpielFeld.Feld[self.pos]
+    def bauentscheidung(self):
+        position = spielfeld.feld[self.pos]
         if randint(1, 100) == 90:
-            position.Bauen()
-            self.Geldaendern(-position.baukosten)
+            position.bauen()
+            self.geldaendern(-position.baukosten)
 
-    def Wuerfeln(self):
+    def wuerfeln(self):
         wuerfel1 = randint(1, 6)
         wuerfel2 = randint(1, 6)
         self.wurf = wuerfel1 + wuerfel2
-        laenge = len(SpielFeld.Feld)
-        self.Positionaendern(self.wurf)
+        laenge = len(spielfeld.feld)
+        self.positionaendern(self.wurf)
         # Ueberpruefen ob es ein Pasch ist
         if wuerfel1 == wuerfel2:
-            self.Wuerfeln()
+            self.wuerfeln()
         if self.pos >= laenge:
-            self.Positionaendern(-laenge)
+            self.positionaendern(-laenge)
             self.geld += 200
 
-    def GefaengnisWuerfeln(self):
+    def gefaengniswuerfeln(self):
         i = 0
-        self.imGefaengnis = True
+        self.im_gefaengnis = True
 
         # man hat pro Runde 3 Versuche um aus dem Gefaengnis zu kommen
-        while i < 3 and self.imGefaengnis is True:
+        while i < 3 and self.im_gefaengnis is True:
             wurf1 = randint(1, 6)
             wurf2 = randint(1, 6)
             # man kommt nur frei wenn man einen Pasch wuerfelt
             if wurf1 == wurf2:
-                self.Positionaendern(wurf1 + wurf2)
-                self.Wuerfeln()
-                self.imGefaengnis = False
+                self.positionaendern(wurf1 + wurf2)
+                self.wuerfeln()
+                self.im_gefaengnis = False
                 i += 1
 
-        if self.imGefaengnis is True and self.gefaengnisfrei > 0:
-            self.imGefaengnis = False
+        if self.im_gefaengnis is True and self.gefaengnisfrei > 0:
+            self.im_gefaengnis = False
             self.gefaengnisfrei -= 1
-            self.Wuerfeln()
+            self.wuerfeln()
 
-    def insGefaengnis(self):
+    def ins_gefaengnis(self):
         self.pos = 10
-        self.imGefaengnis = True
+        self.im_gefaengnis = True
 
-    def rueckevor(self, endPos):
+    def rueckevor(self, endpos):
         # wenn die Endposition hinter einem liegt muss man ueber Los und 200 einziehen
-        if endPos > self.pos:
-            self.Geldaendern(200)
-        self.pos = endPos
+        if endpos > self.pos:
+            self.geldaendern(200)
+        self.pos = endpos
 
     def renovieren(self):
-        for i in SpielFeld.Feld:
-            if i.Besitzer() == self.name:
+        for i in spielfeld.feld:
+            if i.besitzer_abrufen() == self.name:
                 if i.kartentyp == "Haus":
-                    # wenn man 6 Haueser gebaut hat ist es effektiv ein Hotel, sonst sind es nur Haeuser
-                    if i.Haeuser > 5:
-                        self.Geldaendern(i.Haeuser * 25)
+                    # wenn man 6 Haueser gebaut hat ist es effektiv ein Hotel, sonst sind es nur haeuser
+                    if i.haeuser > 5:
+                        self.geldaendern(i.haeuser * 25)
                     else:
-                        self.Geldaendern(100)
+                        self.geldaendern(100)

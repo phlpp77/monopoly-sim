@@ -1,7 +1,7 @@
 from Karten import *
 
 
-class SpielFeld:
+class spielfeld:
     # Haeuser
     Badstrasse = HausKarten(60, [2, 10, 30, 90, 160, 250], 50, 2)
     Turmstrasse = HausKarten(60, [4, 20, 60, 180, 320, 450], 50, 2)
@@ -36,18 +36,18 @@ class SpielFeld:
     Elektrizitaetswerk = Werke()
     Wasserwerk = Werke()
 
-    # nichtHaus Karten
-    Ereignisfeld = nichtHaus("Ereignisfeld")
-    Gemeinschaftsfeld = nichtHaus("Gemeinschaftsfeld")
-    Einkommenssteuer = nichtHaus("Einkommenssteuer")
-    Zusatzsteuer = nichtHaus("Zusatzsteuer")
-    Los = nichtHaus("Los")
-    Gefaengnis = nichtHaus("Gefaengnis")
-    FreiParken = nichtHaus("Frei Parken")
-    InsGefaengnis = nichtHaus("Ins Gefaengnis")
+    # NichtHaus Karten
+    Ereignisfeld = NichtHaus("Ereignisfeld")
+    Gemeinschaftsfeld = NichtHaus("Gemeinschaftsfeld")
+    Einkommenssteuer = NichtHaus("Einkommenssteuer")
+    Zusatzsteuer = NichtHaus("Zusatzsteuer")
+    Los = NichtHaus("Los")
+    Gefaengnis = NichtHaus("Gefaengnis")
+    FreiParken = NichtHaus("Frei Parken")
+    InsGefaengnis = NichtHaus("Ins Gefaengnis")
 
     # alle Karten in eine Liste packen
-    Feld = [Los, Badstrasse, Gemeinschaftsfeld, Turmstrasse, Einkommenssteuer, Suedbahnhof, Chausseestrasse,
+    feld = [Los, Badstrasse, Gemeinschaftsfeld, Turmstrasse, Einkommenssteuer, Suedbahnhof, Chausseestrasse,
             Ereignisfeld, Elisenstrasse, Poststrasse, Gefaengnis, Seestrasse, Elektrizitaetswerk, Hafenstrasse,
             NeueStrasse, Westbahnhof, MuenchnerStrasse, Gemeinschaftsfeld, WienerStrasse, BerlinerStrasse, FreiParken,
             Theaterstrasse, Ereignisfeld, Museumsstrasse, Opernplatz, Nordbahnhof, Lessingstrasse, Schillerstrasse,
