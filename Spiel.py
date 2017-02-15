@@ -227,11 +227,11 @@ class Spieler:
                     gkartenzaehler = 0
 
                 # wenn man alle Karten durch hat werden sie neu gemischt
-                if ekartenzaehler > len(ereignisliste) - 1:
-                    ekartenzaehler = 0
+                if gkartenzaehler > len(gemeinschaftsliste) - 1:
+                    gkartenzaehler = 0
                     shuffle(ereignisliste)
-                ereignisliste[ekartenzaehler]
-                ekartenzaehler += 1
+                gemeinschaftsliste[gkartenzaehler]
+                gkartenzaehler += 1
 
     def Kaufentscheidung(self):
         position = SpielFeld.Feld[self.pos]
