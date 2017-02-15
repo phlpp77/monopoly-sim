@@ -28,22 +28,29 @@ class GUI:
                       text="Bitte die Simulation von Monopoly konfigurieren, bevor diese gestartet wird.")
         label.grid(row=0, columnspan=2)
         # Konfiguration
+        # Inputfelder fuer startkapital, startposition und Anzahl der wiederholungen
         Label(self.hauptfenster, text="Startkapital").grid(row=1)
-        Label(self.hauptfenster, text="startposition").grid(row=2)
+        Label(self.hauptfenster, text="Startposition").grid(row=2)
+        Label(self.hauptfenster, text="Anzahl Wdh").grid(row=3)
         global sk
         sk = Entry(self.hauptfenster)
         global sp
         sp = Entry(self.hauptfenster)
+        global wdh
+        wdh = Entry(self.hauptfenster)
         sk.grid(row=1, column=1)
         sp.grid(row=2, column=1)
-        Label(self.hauptfenster, text="Spierleranzahl").grid(row=3)
+        wdh.grid(row=3, column=1)
+
+        # Schieberegler fuer Anzahl der Spieler (2-6)
+        Label(self.hauptfenster, text="Spierleranzahl").grid(row=4)
         global sa
         sa = Scale(self.hauptfenster, from_=2, to=6, orient=HORIZONTAL)
-        sa.grid(row=3, column=1)
+        sa.grid(row=4, column=1)
         # Start / Überprüfung der Werte
         start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, fg="white",
                        bg="black")
-        start.grid(row=4, columnspan=2)
+        start.grid(row=5, columnspan=2)
         root.mainloop()
 
     def starten(self):
@@ -62,29 +69,60 @@ class GUI:
                     startbar += 1
             except ValueError:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Startkapital)!")
+
         # Prüfung der startposition
         self.sp = sp.get()
         if self.sp == "":
-            messagebox.showerror("FAIL", "Wähle bitte ein startposition!")
+            messagebox.showerror("FAIL", "Wähle bitte ein Startposition!")
         else:
             ske = self.sp.strip()
             try:
                 self.sp = int(ske)
                 if self.sp < 0 or self.sp > 39:
-                    messagebox.showerror("FAIL", "Wähle ein passendes startposition (zwischen 0 und 39)")
+                    messagebox.showerror("FAIL", "Wähle eine passende Startposition (zwischen 0 und 39)")
                 else:
                     startbar += 1
             except ValueError:
-                messagebox.showerror("FAIL", "Wähle bitte eine Zahl (startposition)!")
-        if startbar == 2:
+                messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Startposition)!")
+
+        # Pruefung der Wiederholungen
+        self.wdh = wdh.get()
+        if self.wdh == "":
+            messagebox.showerror("FAIL", "Wähle bitte die Anzahl der Wiederholungen")
+        else:
+            ske = self.wdh.strip()
+            try:
+                self.wdh = int(ske)
+                if self.wdh < 1:
+                    messagebox.showerror("FAIL", "Wähle bitte Wiederholungen über 1!")
+                else:
+                    startbar += 1
+            except ValueError:
+                messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Wiederholungen)!")
+
+        if startbar == 3:
             anzahl = sa.get()
             spieler = []
             for i in range(1, anzahl + 1):
                 spieler.append("Spieler" + str(i))
             startgeld = self.sk
             startpos = self.sp
-            neues_spiel = Spiel(spieler, startgeld, startpos)
-            neues_spiel.schleife()
+            anzahl_wdh = 0
+            auswertungsliste = []
+            while anzahl_wdh < self.wdh:
+                neues_spiel = Spiel(spieler, startgeld, startpos)
+                auswertungsliste.append(neues_spiel.schleife())
+                anzahl_wdh += 1
+
+            print("Gewinner haben durchschnittlich", self.durchschnitt(auswertungsliste), "Euro")
+
+    # Methode um aus einem Array den Durchschnittswert zu bilden
+    def durchschnitt(self, auswertungsliste):
+        summe = 0
+        for i in auswertungsliste:
+            summe += i
+        return summe/(len(auswertungsliste)-1)
+
 
 
 class Spiel:
@@ -125,6 +163,7 @@ class Spiel:
 
         print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
         print()
+        return self.spiel[0].geld
 
 
 nSpiel = GUI()
