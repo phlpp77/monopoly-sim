@@ -114,7 +114,9 @@ class GUI:
                 auswertungsliste.append(neues_spiel.schleife())
                 anzahl_wdh += 1
 
-            print("Gewinner haben durchschnittlich", self.durchschnitt(auswertungsliste), "Euro")
+            endtext = ("Gewinner haben durchschnittlich", round(self.durchschnitt(auswertungsliste), 2), "Euro, in einem Spiel mit", self.wdh, "Runden und einem Startkapital von", self.sk, "Euro bekommen.\nDas Spiel wurde an Feldnummer", self.sp, "gestartet.")
+
+            Label(self.hauptfenster, text=endtext).grid(row=6, column=1)
 
     # Methode um aus einem Array den Durchschnittswert zu bilden
     def durchschnitt(self, auswertungsliste):
