@@ -23,12 +23,14 @@ class GUI:
         y = (hs / 2) - (h / 2)
         root.geometry("%dx%d+%d+%d" % (w, h, x, y))
         root.config(bg='lightgrey')
+
         # Einleitung
         label = Label(self.hauptfenster,
                       text="Bitte die Simulation von Monopoly konfigurieren, bevor diese gestartet wird.")
         label.grid(row=0, columnspan=2)
+
         # Konfiguration
-        # Inputfelder fuer startkapital, startposition und Anzahl der wiederholungen
+        # Inputfelder für startkapital, startposition und Anzahl der wiederholungen
         Label(self.hauptfenster, text="Startkapital").grid(row=1)
         Label(self.hauptfenster, text="Startposition").grid(row=2)
         Label(self.hauptfenster, text="Anzahl Wdh").grid(row=3)
@@ -41,7 +43,6 @@ class GUI:
         sk.grid(row=1, column=1)
         sp.grid(row=2, column=1)
         wdh.grid(row=3, column=1)
-
         # Schieberegler fuer Anzahl der Spieler (2-6)
         Label(self.hauptfenster, text="Spierleranzahl").grid(row=4)
         global sa
@@ -70,7 +71,7 @@ class GUI:
             except ValueError:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Startkapital)!")
 
-        # Prüfung der startposition
+        # Prüfung der Startposition
         self.sp = sp.get()
         if self.sp == "":
             messagebox.showerror("FAIL", "Wähle bitte ein Startposition!")
@@ -85,7 +86,7 @@ class GUI:
             except ValueError:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Startposition)!")
 
-        # Pruefung der Wiederholungen
+        # Prüfung der Wiederholungen
         self.wdh = wdh.get()
         if self.wdh == "":
             messagebox.showerror("FAIL", "Wähle bitte die Anzahl der Wiederholungen")
