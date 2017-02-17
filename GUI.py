@@ -2,27 +2,27 @@ from Spiel import Spieler
 from Spielfeld import spielfeld
 from tkinter import *
 from tkinter import messagebox
-
+import time
 
 class GUI:
     # Definition von den Spielern und anderen Variablen
     def __init__(self):
         # Fenster erstellen
-        root = Tk()
-        self.hauptfenster = Frame(root)
+        self.root = Tk()
+        self.hauptfenster = Frame(self.root)
         self.hauptfenster.pack()
-        root.lift()
-        root.attributes("-topmost", True)
-        root.title("Monopoly Simulation")
+        self.root.lift()
+        self.root.attributes("-topmost", True)
+        self.root.title("Monopoly Simulation")
         # Fenster mittig zentrieren
         w = 1280
         h = 720
-        ws = root.winfo_screenwidth()
-        hs = root.winfo_screenheight()
+        ws = self.root.winfo_screenwidth()
+        hs = self.root.winfo_screenheight()
         x = (ws / 2) - (w / 2)
         y = (hs / 2) - (h / 2)
-        root.geometry("%dx%d+%d+%d" % (w, h, x, y))
-        root.config(bg='lightgrey')
+        self.root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        self.root.config(bg='lightgrey')
 
         # Einleitung
         label = Label(self.hauptfenster,
@@ -52,7 +52,7 @@ class GUI:
         start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, fg="white",
                        bg="black")
         start.grid(row=5, columnspan=2)
-        root.mainloop()
+        self.root.mainloop()
 
     def starten(self):
         # Prüfung des Startkapitals
@@ -114,6 +114,7 @@ class GUI:
                 neues_spiel = Spiel(spieler, startgeld, startpos)
                 auswertungsliste.append(neues_spiel.schleife())
                 anzahl_wdh += 1
+            spielanimation(anzahl)
 
             endtext = ("Gewinner haben durchschnittlich", round(self.durchschnitt(auswertungsliste), 2), "Euro, in einem Spiel mit", self.wdh, "Runden und einem Startkapital von", self.sk, "Euro bekommen.\nDas Spiel wurde an Feldnummer", self.sp, "gestartet.")
 
@@ -126,6 +127,46 @@ class GUI:
             summe += i
         return summe/(len(auswertungsliste)-1)
 
+    def spielanimation(self, anzahl):
+        self.spielerfiguren = []
+        self.positionen = []
+        # Tk setup
+        self.spielfeld = Frame(self.root)
+        spielfeld = PhotoImage(file="spielfeld.gif")
+        width = spielfeld.width()
+        height = spielfeld.height()
+        self.canvas = Canvas(self.spielfeld, bg="black", width=width, height=height)
+        self.canvas.pack()
+
+        # Spielfeld konfigurieren
+        canvas_spielfeld = self.canvas.create_image(width / 2, height / 2, image=spielfeld)
+        canvas_spielfeld.pack()
+        # Figuren konfigurieren
+        figuren = [PhotoImage(file="figur0.gif"), PhotoImage(file="figur1.gif"), PhotoImage(file="figur2.gif"),
+                   PhotoImage(file="figur3.gif"), PhotoImage(file="figur4.gif"), PhotoImage(file="figur5.gif")]
+        for x in range(1, anzahl + 1):
+            self.spielerfiguren.append(self.canvas.create_image(width * 0.937, height * 0.5937, image=figuren[x]))
+
+    # Figuren auf eine neue Position verschieben
+    def pos_aendern(self, figur, endkoordinaten):
+        x = endkoordinaten[0] - self.canvas.coords(self.spielerfiguren[figur])[0]
+        y = endkoordinaten[1] - self.canvas.coords(self.spielerfiguren[figur])[1]
+        self.canvas.move(self.spielerfiguren[figur], x, y)
+        self.root.update()
+
+    def spielfeldpos_aendern(self, figur, endpos):
+        anfangspos = self.positionen.index(self.canvas.coords(self.spielerfiguren[figur]))
+        if endpos > anfangspos:
+            for i in range(anfangspos, endpos):
+                self.pos_aendern(figur, self.positionen[i])
+                time.sleep(0.1)
+        else:
+            for i in range(anfangspos, len(spielfeld.feld) - 1):
+                self.pos_aendern(figur, self.positionen[i])
+                time.sleep(0.1)
+            for i in range(endpos):
+                self.pos_aendern(figur, self.positionen[i])
+                time.sleep(0.1)
 
 
 class Spiel:
@@ -145,6 +186,7 @@ class Spiel:
             for i in self.spiel:
                 if i.im_gefaengnis is False:
                     i.wuerfeln()
+                    GUI.spielfeldpos_aendern(self.spiel.index(i), i.pos)
                 i.feldchecken(self)
                 # print("Name:", i.name)
                 # print("Geld:", i.Geld())
