@@ -3,6 +3,9 @@ from Spielfeld import spielfeld
 from tkinter import *
 from tkinter import messagebox
 import time
+from os import system
+from platform import system as platform
+
 
 class GUI:
     # Definition von den Spielern und anderen Variablen
@@ -13,6 +16,7 @@ class GUI:
         self.hauptfenster.pack()
         self.root.lift()
         self.root.attributes("-topmost", True)
+        self.root.focus_force()
         self.root.title("Monopoly Simulation")
         # Fenster mittig zentrieren
         w = 1280
@@ -23,6 +27,8 @@ class GUI:
         y = (hs / 2) - (h / 2)
         self.root.geometry("%dx%d+%d+%d" % (w, h, x, y))
         self.root.config(bg='lightgrey')
+        if platform() == 'Darwin':
+            system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
         # Einleitung
         label = Label(self.hauptfenster,
@@ -52,14 +58,17 @@ class GUI:
         start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, fg="white",
                        bg="black")
         start.grid(row=5, columnspan=2)
+        self.root.bind('<KeyPress-Return>', self.starten)
         self.root.mainloop()
 
-    def starten(self):
+    def starten(self, x):
         # Prüfung des Startkapitals
         startbar = 0
         self.sk = sk.get()
         if self.sk == "":
             messagebox.showerror("FAIL", "Wähle bitte ein Startkapital!")
+
+            subprocess.call("osascript -e '{}'".format(applescript), shell=True)
         else:
             ske = self.sk.strip()
             try:
@@ -132,7 +141,7 @@ class GUI:
         self.positionen = []
         # Tk setup
         self.spielfeld = Frame(self.root)
-        spielfeld = PhotoImage(file="spielfeld.gif")
+        spielfeld = PhotoImage(file="gfx/spielfeld.gif")
         width = spielfeld.width()
         height = spielfeld.height()
         self.canvas = Canvas(self.spielfeld, bg="black", width=width, height=height)
@@ -142,8 +151,8 @@ class GUI:
         canvas_spielfeld = self.canvas.create_image(width / 2, height / 2, image=spielfeld)
         canvas_spielfeld.pack()
         # Figuren konfigurieren
-        figuren = [PhotoImage(file="figur0.gif"), PhotoImage(file="figur1.gif"), PhotoImage(file="figur2.gif"),
-                   PhotoImage(file="figur3.gif"), PhotoImage(file="figur4.gif"), PhotoImage(file="figur5.gif")]
+        figuren = [PhotoImage(file="gfx/figur0.gif"), PhotoImage(file="gfx/figur1.gif"), PhotoImage(file="gfx/figur2.gif"),
+                   PhotoImage(file="gfx/figur3.gif"), PhotoImage(file="gfx/figur4.gif"), PhotoImage(file="gfx/figur5.gif")]
         for x in range(1, anzahl + 1):
             self.spielerfiguren.append(self.canvas.create_image(width * 0.937, height * 0.5937, image=figuren[x]))
 
