@@ -67,8 +67,6 @@ class GUI:
         self.sk = sk.get()
         if self.sk == "":
             messagebox.showerror("FAIL", "Wähle bitte ein Startkapital!")
-
-            subprocess.call("osascript -e '{}'".format(applescript), shell=True)
         else:
             ske = self.sk.strip()
             try:
