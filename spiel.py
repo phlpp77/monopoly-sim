@@ -1,4 +1,4 @@
 from GUI import *
 
 class spielStarten:
-    nSpiel = GUI()
+    gui = GUI()

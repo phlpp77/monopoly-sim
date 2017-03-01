@@ -1,4 +1,4 @@
-from Spiel import Spieler
+from Spieler import Spieler
 from Spielfeld import spielfeld
 from tkinter import *
 from tkinter import messagebox
@@ -61,6 +61,18 @@ class GUI:
         self.root.bind('<KeyPress-Return>', self.starten)
         self.root.mainloop()
 
+    def getStartPos(self):
+        return sp
+
+    def getStartKap(self):
+        return sk
+
+    def getWdh(self):
+        return wdh
+
+    def getSpielerAnzahl(self):
+        return sa
+
     def starten(self, x):
         # Prüfung des Startkapitals
         startbar = 0
@@ -109,6 +121,12 @@ class GUI:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Wiederholungen)!")
 
         if startbar == 3:
+            self.getStartPos()
+            self.getStartKap()
+            self.getSpielerAnzahl()
+            self.getWdh()
+
+            '''
             anzahl = sa.get()
             spieler = []
             for i in range(1, anzahl + 1):
@@ -126,6 +144,7 @@ class GUI:
             endtext = ("Gewinner haben durchschnittlich", round(self.durchschnitt(auswertungsliste), 2), "Euro, in einem Spiel mit", self.wdh, "Runden und einem Startkapital von", self.sk, "Euro bekommen.\nDas Spiel wurde an Feldnummer", self.sp, "gestartet.")
 
             Label(self.hauptfenster, text=endtext).grid(row=6, column=1)
+            '''
 
     # Methode um aus einem Array den Durchschnittswert zu bilden
     def durchschnitt(self, auswertungsliste):
