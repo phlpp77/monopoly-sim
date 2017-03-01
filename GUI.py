@@ -73,7 +73,7 @@ class GUI:
     def getSpielerAnzahl(self):
         return sa
 
-    def starten(self, x):
+    def starten(self):
         # Prüfung des Startkapitals
         startbar = 0
         self.sk = sk.get()
@@ -121,10 +121,7 @@ class GUI:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Wiederholungen)!")
 
         if startbar == 3:
-            self.getStartPos()
-            self.getStartKap()
-            self.getSpielerAnzahl()
-            self.getWdh()
+            return True
 
             '''
             anzahl = sa.get()
