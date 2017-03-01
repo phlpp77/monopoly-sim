@@ -10,6 +10,9 @@ from platform import system as platform
 class GUI:
     # Definition von den Spielern und anderen Variablen
     def __init__(self):
+        pass
+
+    def erstellen(self):
         # Fenster erstellen
         self.root = Tk()
         self.hauptfenster = Frame(self.root)
@@ -63,6 +66,7 @@ class GUI:
 
     def getStartPos(self):
         return sp
+        print("startposreturn")
 
     def getStartKap(self):
         return sk
@@ -121,7 +125,11 @@ class GUI:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Wiederholungen)!")
 
         if startbar == 3:
-            return True
+            self.root.destroy()
+            #return True
+            global testV
+            testV = 1
+            print("startbar")
 
             '''
             anzahl = sa.get()
