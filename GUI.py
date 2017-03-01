@@ -218,4 +218,4 @@ class Spiel:
         return self.spiel[0].geld
 
 
-nSpiel = GUI()
+
