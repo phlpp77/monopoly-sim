@@ -221,7 +221,7 @@ class Spiel:
             for i in self.spiel:
                 if i.im_gefaengnis is False:
                     i.wuerfeln()
-                    GUI.spielfeldpos_aendern(self.spiel.index(i), i.pos)
+                    #GUI.spielfeldpos_aendern(self.spiel.index(i), i.pos)
                 i.feldchecken(self)
                 # print("Name:", i.name)
                 # print("Geld:", i.Geld())

@@ -16,3 +16,6 @@ class SpielStarten:
         for i in range(1, sa + 1):
             s.append("Spieler" + str(i))
         spiel = Spiel(s, sk, sp)
+        if sw > 1:
+            for i in range(sw-1):
+                spiel.__init__(s, sk, sp)
