@@ -114,7 +114,7 @@ class GUI:
         self.sa = sa.get()
 
         if startbar == 3:
-            self.root.destroy()
+            #self.root.destroy()
             self.startbarabfrage = True
             print("startbar")
 
@@ -241,8 +241,8 @@ class Spiel:
                 if len(self.spiel) == 1:
                     gewinnerstehtnichtfest = False
 
-        print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
-        print()
+        #print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
+        #print()
         return self.spiel[0].geld
 
 
