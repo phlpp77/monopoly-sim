@@ -64,19 +64,6 @@ class GUI:
         self.root.bind('<KeyPress-Return>', self.starten)
         self.root.mainloop()
 
-    def getStartPos(self):
-        return sp
-        print("startposreturn")
-
-    def getStartKap(self):
-        return sk
-
-    def getWdh(self):
-        return wdh
-
-    def getSpielerAnzahl(self):
-        return sa
-
     def starten(self):
         # Prüfung des Startkapitals
         startbar = 0
@@ -124,15 +111,30 @@ class GUI:
             except ValueError:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Wiederholungen)!")
 
+        self.sa = sa.get()
+
         if startbar == 3:
             self.root.destroy()
-            #return True
             self.startbarabfrage = True
             print("startbar")
 
     def startbar(self):
         return self.startbarabfrage
-        '''
+
+    def getStartPos(self):
+        return self.sp
+
+    def getStartKap(self):
+        return self.sk
+
+    def getWdh(self):
+        return self.wdh
+
+    def getSpielerAnzahl(self):
+        return self.sa
+
+
+    '''
             anzahl = sa.get()
             spieler = []
             for i in range(1, anzahl + 1):
@@ -150,7 +152,7 @@ class GUI:
             endtext = ("Gewinner haben durchschnittlich", round(self.durchschnitt(auswertungsliste), 2), "Euro, in einem Spiel mit", self.wdh, "Runden und einem Startkapital von", self.sk, "Euro bekommen.\nDas Spiel wurde an Feldnummer", self.sp, "gestartet.")
 
             Label(self.hauptfenster, text=endtext).grid(row=6, column=1)
-            '''
+        '''
 
     # Methode um aus einem Array den Durchschnittswert zu bilden
     def durchschnitt(self, auswertungsliste):
@@ -210,6 +212,7 @@ class Spiel:
             self.spiel.append(i)
         self.feldhaeufigkeiten = [4, 2, 2, 3, 3, 3, 3, 3, 3, 2]
         self.abgaben = 0
+        self.schleife()
 
     def schleife(self):
         # die verschiedenen Spieler spielen solange bis der Sieger fest steht
