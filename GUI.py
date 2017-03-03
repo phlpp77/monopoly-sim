@@ -11,11 +11,11 @@ class GUI:
     # Definition von den Spielern und anderen Variablen
     def __init__(self):
         self.startbarabfrage = False
-
-    def erstellen(self):
         # Fenster erstellen
         self.root = Tk()
         self.hauptfenster = Frame(self.root)
+
+    def erstellen(self):
         self.hauptfenster.pack()
         self.root.lift()
         self.root.attributes("-topmost", True)
@@ -114,7 +114,7 @@ class GUI:
         self.sa = sa.get()
 
         if startbar == 3:
-            #self.root.destroy()
+            # self.root.destroy()
             self.startbarabfrage = True
             print("startbar")
 
@@ -132,7 +132,6 @@ class GUI:
 
     def getSpielerAnzahl(self):
         return self.sa
-
 
     '''
             anzahl = sa.get()
@@ -154,12 +153,14 @@ class GUI:
             Label(self.hauptfenster, text=endtext).grid(row=6, column=1)
         '''
 
-    # Methode um aus einem Array den Durchschnittswert zu bilden
-    def durchschnitt(self, auswertungsliste):
-        summe = 0
-        for i in auswertungsliste:
-            summe += i
-        return summe/(len(auswertungsliste)-1)
+    def auswertungstext(self, durchschnitt):
+        endtext = (
+            "Gewinner haben durchschnittlich", round(durchschnitt, 2), "Euro, in einem Spiel mit",
+            self.wdh, "Runden und einem Startkapital von", self.sk, "Euro bekommen.\nDas Spiel wurde an Feldnummer",
+            self.sp, "gestartet.")
+        messagebox.showerror("ENDE", endtext)
+
+        # Label(self.hauptfenster, text=endtext).grid(row=6, column=1)
 
     def spielanimation(self, anzahl):
         self.spielerfiguren = []
@@ -176,8 +177,10 @@ class GUI:
         canvas_spielfeld = self.canvas.create_image(width / 2, height / 2, image=spielfeld)
         canvas_spielfeld.pack()
         # Figuren konfigurieren
-        figuren = [PhotoImage(file="gfx/figur0.gif"), PhotoImage(file="gfx/figur1.gif"), PhotoImage(file="gfx/figur2.gif"),
-                   PhotoImage(file="gfx/figur3.gif"), PhotoImage(file="gfx/figur4.gif"), PhotoImage(file="gfx/figur5.gif")]
+        figuren = [PhotoImage(file="gfx/figur0.gif"), PhotoImage(file="gfx/figur1.gif"),
+                   PhotoImage(file="gfx/figur2.gif"),
+                   PhotoImage(file="gfx/figur3.gif"), PhotoImage(file="gfx/figur4.gif"),
+                   PhotoImage(file="gfx/figur5.gif")]
         for x in range(1, anzahl + 1):
             self.spielerfiguren.append(self.canvas.create_image(width * 0.937, height * 0.5937, image=figuren[x]))
 
@@ -212,7 +215,6 @@ class Spiel:
             self.spiel.append(i)
         self.feldhaeufigkeiten = [4, 2, 2, 3, 3, 3, 3, 3, 3, 2]
         self.abgaben = 0
-        self.schleife()
 
     def schleife(self):
         # die verschiedenen Spieler spielen solange bis der Sieger fest steht
@@ -221,15 +223,15 @@ class Spiel:
             for i in self.spiel:
                 if i.im_gefaengnis is False:
                     i.wuerfeln()
-                    #GUI.spielfeldpos_aendern(self.spiel.index(i), i.pos)
+                    # gui.spielfeldpos_aendern(self.spiel.index(i), i.pos)
                 i.feldchecken(self)
                 # print("Name:", i.name)
-                # print("Geld:", i.Geld())
+                # print("Geld:", i.geld())
                 # print()
 
                 # wenn Spieler unter 1 Euro hat wird er aus Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:
-                    print(i.name, "ist aus dem Spiel")
+                    # print(i.name, "ist aus dem Spiel")
                     for x in spielfeld.feld:
                         if x.kartentyp != "anderes":
                             if x.besitzer == i.name:
@@ -241,9 +243,5 @@ class Spiel:
                 if len(self.spiel) == 1:
                     gewinnerstehtnichtfest = False
 
-        #print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
-        #print()
+        # print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
         return self.spiel[0].geld
-
-
-
