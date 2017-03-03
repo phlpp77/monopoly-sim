@@ -4,7 +4,9 @@ from GUI import *
 class SpielStarten:
     gui = GUI()
     gui.erstellen()
-    if testV == 1:
+    startbar = gui.startbar()
+    print(startbar)
+    if startbar is True:
         print("t = 1")
     '''
     if gui.erstellen() is True:

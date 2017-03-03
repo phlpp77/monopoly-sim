@@ -10,7 +10,7 @@ from platform import system as platform
 class GUI:
     # Definition von den Spielern und anderen Variablen
     def __init__(self):
-        pass
+        self.startbarabfrage = False
 
     def erstellen(self):
         # Fenster erstellen
@@ -127,11 +127,12 @@ class GUI:
         if startbar == 3:
             self.root.destroy()
             #return True
-            global testV
-            testV = 1
+            self.startbarabfrage = True
             print("startbar")
 
-            '''
+    def startbar(self):
+        return self.startbarabfrage
+        '''
             anzahl = sa.get()
             spieler = []
             for i in range(1, anzahl + 1):
