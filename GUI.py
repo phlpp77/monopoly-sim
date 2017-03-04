@@ -61,8 +61,12 @@ class GUI:
         start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, fg="white",
                        bg="black")
         start.grid(row=5, columnspan=2)
-        self.root.bind('<KeyPress-Return>', self.starten)
+        self.root.bind('<KeyPress-Return>', self.enter_starten)
         self.root.mainloop()
+
+    # TK legt beim Keypress noch metadaten bei, die zu TypeErrors führen, deshab werden sie hier fallen gelassen
+    def enter_starten(self, x):
+        self.starten()
 
     def starten(self):
         # Prüfung des Startkapitals
@@ -114,9 +118,8 @@ class GUI:
         self.sa = sa.get()
 
         if startbar == 3:
-            # self.root.destroy()
+            self.root.destroy()
             self.startbarabfrage = True
-            print("startbar")
 
     def startbar(self):
         return self.startbarabfrage
@@ -185,7 +188,7 @@ class GUI:
             self.spielerfiguren.append(self.canvas.create_image(width * 0.937, height * 0.5937, image=figuren[x]))
 
     # Figuren auf eine neue Position verschieben
-    def pos_aendern(self, figur, endkoordinaten):
+    def __pos_aendern(self, figur, endkoordinaten):
         x = endkoordinaten[0] - self.canvas.coords(self.spielerfiguren[figur])[0]
         y = endkoordinaten[1] - self.canvas.coords(self.spielerfiguren[figur])[1]
         self.canvas.move(self.spielerfiguren[figur], x, y)
@@ -195,28 +198,35 @@ class GUI:
         anfangspos = self.positionen.index(self.canvas.coords(self.spielerfiguren[figur]))
         if endpos > anfangspos:
             for i in range(anfangspos, endpos):
-                self.pos_aendern(figur, self.positionen[i])
+                self.__pos_aendern(figur, self.positionen[i])
                 time.sleep(0.1)
         else:
             for i in range(anfangspos, len(spielfeld.feld) - 1):
-                self.pos_aendern(figur, self.positionen[i])
+                self.__pos_aendern(figur, self.positionen[i])
                 time.sleep(0.1)
             for i in range(endpos):
-                self.pos_aendern(figur, self.positionen[i])
+                self.__pos_aendern(figur, self.positionen[i])
                 time.sleep(0.1)
 
 
 class Spiel:
     def __init__(self, spieler, startgeld, startpos):
+        self.abgaben = 0
         self.spiel = []
         # alle Teilnehmer in eine Liste eintragen
         for i in spieler:
             i = Spieler(i, startgeld, startpos)
             self.spiel.append(i)
-        self.feldhaeufigkeiten = [4, 2, 2, 3, 3, 3, 3, 3, 3, 2]
-        self.abgaben = 0
 
-    def schleife(self):
+    @staticmethod
+    def spielerzurücksetzen(name):
+        for x in spielfeld.feld:
+            if x.kartentyp != "anderes":
+                if x.besitzer == name:
+                    x.besitzer = ""
+                    x.Haeuser = 0
+
+    '''def schleife(self):
         # die verschiedenen Spieler spielen solange bis der Sieger fest steht
         gewinnerstehtnichtfest = True
         while gewinnerstehtnichtfest:
@@ -244,4 +254,4 @@ class Spiel:
                     gewinnerstehtnichtfest = False
 
         # print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
-        return self.spiel[0].geld
+        return self.spiel[0].geld'''

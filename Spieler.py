@@ -34,7 +34,7 @@ class Spieler:
             # wenn das feld einem selbst gehoert und bebaubar ist wird entschieden, ob ein Haus gebaut werden soll
             elif besitzer == self.name and position.bebaubar() is True:
                 # ueberprufen ob man alle 3 felder besitzt so dass man bauen kann
-                if self.anzahl_in_besitz[position.farbe] == self.spiel.feldhaeufigkeiten[position.farbe]:
+                if self.anzahl_in_besitz[position.farbe] == spielfeld.feldhaeufigkeiten[position.farbe]:
                     # man kann nur 4 haeuser und 1 Hotel haben, also insgesamt 5 Mal bauen
                     if position.haeuser < 5:
                         self.bauentscheidung()
@@ -62,7 +62,7 @@ class Spieler:
                             miete = position.mieten_abrufen()
                             farbe = position.farbe
                             haeuser = position.haeuser
-                            if self.anzahl_in_besitz[farbe] == self.spiel.feldhaeufigkeiten[farbe] and haeuser == 0:
+                            if self.anzahl_in_besitz[farbe] == spielfeld.feldhaeufigkeiten[farbe] and haeuser == 0:
                                 miete *= 2
 
                         # Bezahlen der Miete, Abziehen der Miete vom eigenen Konto
@@ -74,7 +74,7 @@ class Spieler:
         else:
             typ = position.typ
             if typ == "Ins Gefaengnis":
-                self.pos = 9
+                self.pos = 10
                 self.im_gefaengnis = True
 
             # nachdem man ins Gefaengnis kommt darf man sofort probieren raus zu kommen
@@ -231,7 +231,7 @@ class Spieler:
         if randint(1, 100) <= 50:
             self.kaufen()
 
-        elif self.anzahl_in_besitz[position.farbe] == self.spiel.feldhaeufigkeiten[position.farbe] - 1:
+        elif self.anzahl_in_besitz[position.farbe] == spielfeld.feldhaeufigkeiten[position.farbe] - 1:
             self.kaufen()
         # wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
         elif self.anzahl_in_besitz[position.farbe] == 1:
@@ -284,7 +284,7 @@ class Spieler:
             self.wuerfeln()
 
     def ins_gefaengnis(self):
-        self.pos = 10
+        self.pos = 9
         self.im_gefaengnis = True
 
     def rueckevor(self, endpos):

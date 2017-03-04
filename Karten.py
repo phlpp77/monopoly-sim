@@ -72,7 +72,8 @@ class Werke(HausKarten):
     def bebaubar():
         return False
 
-    def mieten_abrufen(self, wurf, anzahl):
+    @staticmethod
+    def mieten_abrufen(wurf, anzahl):
         if anzahl == 1:
             return wurf * 10
         else:
@@ -90,7 +91,8 @@ class Bahnhoefe(HausKarten):
     def bebaubar():
         return False
 
-    def mieten_abrufen(self, anzahl_in_besitz):
+    @staticmethod
+    def mieten_abrufen(anzahl_in_besitz):
         if anzahl_in_besitz == 1:
             return 25
         elif anzahl_in_besitz == 2:

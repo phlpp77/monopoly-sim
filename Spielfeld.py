@@ -53,3 +53,5 @@ class spielfeld:
             Theaterstrasse, Ereignisfeld, Museumsstrasse, Opernplatz, Nordbahnhof, Lessingstrasse, Schillerstrasse,
             Wasserwerk, Goethestrasse, InsGefaengnis, Rathausplatz, Hauptstrasse, Gemeinschaftsfeld, Bahnhofstrasse,
             Hauptbahnhof, Ereignisfeld, Parkstrasse, Zusatzsteuer, Schlossallee]
+
+    feldhaeufigkeiten = [4, 2, 2, 3, 3, 3, 3, 3, 3, 2]

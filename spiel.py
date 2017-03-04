@@ -19,9 +19,8 @@ class SpielStarten:
             for i in range(sw):
                 self.spiel.__init__(s, sk, sp)
                 self.auswertungsliste.append(self.schleife())
+            # self.gui.auswertungstext(Auswertung.durchschnitt(self.auswertungsliste))
             print(Auswertung.durchschnitt(self.auswertungsliste))
-            print(Auswertung.median(self.auswertungsliste))
-            self.gui.auswertungstext(Auswertung.durchschnitt(self.auswertungsliste))
 
     def schleife(self):
         spiel = self.spiel.spiel
@@ -30,17 +29,13 @@ class SpielStarten:
         while gewinnerstehtnichtfest:
             # jeder for-schleifen-zyklus ist eine Runde aller Spieler
             for i in spiel:
-                if i.im_gefaengnis is False:
-                    i.wuerfeln()
+                # Wenn Spieler nicht im Gefängnis ist wird gewürfelt
+                i.im_gefaengnis is False and i.wuerfeln()
                 i.feldchecken(self.spiel)
                 # wenn Spieler unter 1 Euro hat wird er aus dem Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:
                     print(i.name, "ist aus dem Spiel")
-                    for x in spielfeld.feld:
-                        if x.kartentyp != "anderes":
-                            if x.besitzer == i.name:
-                                x.besitzer = ""
-                                x.Haeuser = 0
+                    self.spiel.spielerzurücksetzen(i.name)
                     del spiel[spiel.index(i)]
             # wenn nur noch 1 Spieler dri ist wird die Schleife beendet
             if len(spiel) == 1:
@@ -53,22 +48,13 @@ class Auswertung:
     # Methode um aus einem Array den Durchschnittswert zu bilden
     @staticmethod
     def durchschnitt(liste):
-        summe = 0
-        if len(liste) == 1:
-            return liste[0]
-        else:
-            for i in liste:
-                summe += i
-            return summe / (len(liste) - 1)
+        return liste[0] if len(liste) == 1 else sum(liste) / (len(liste) - 1)
 
     # Methode um aus einem Array den Median zu bilden
     @staticmethod
     def median(liste):
         mitte = (len(liste) - 1) / 2
-        if mitte.is_integer():
-            return liste[int(mitte)]
-        else:
-            return (liste[int(mitte)] + liste[int(mitte + 1)]) / 2
+        return liste[int(mitte)] if mitte.is_integer() else (liste[int(mitte)] + liste[int(mitte + 1)]) / 2
 
 
 SpielStarten()
