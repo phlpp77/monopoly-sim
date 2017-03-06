@@ -166,6 +166,7 @@ class GUI:
         # Label(self.hauptfenster, text=endtext).grid(row=6, column=1)
 
     def spielanimation(self, anzahl):
+        self.root = Toplevel()
         self.spielerfiguren = []
         self.positionen = []
         # Tk setup

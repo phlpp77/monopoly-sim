@@ -25,6 +25,8 @@ class SpielStarten:
     def schleife(self):
         spiel = self.spiel.spiel
         gewinnerstehtnichtfest = True
+        #print('Spieler', len(spiel))
+        self.gui.spielanimation(len(spiel))
         # Spielschleife wird ausgeführt solange mehr als ein Spieler noch drin ist
         while gewinnerstehtnichtfest:
             # jeder for-schleifen-zyklus ist eine Runde aller Spieler
@@ -37,7 +39,7 @@ class SpielStarten:
                     print(i.name, "ist aus dem Spiel")
                     self.spiel.spielerzurücksetzen(i.name)
                     del spiel[spiel.index(i)]
-            # wenn nur noch 1 Spieler dri ist wird die Schleife beendet
+            # wenn nur noch 1 Spieler im Spiel ist wird die Schleife beendet
             if len(spiel) == 1:
                 gewinnerstehtnichtfest = False
         print("Spieler", spiel[0].name, "gewinnt mit", spiel[0].geld)
