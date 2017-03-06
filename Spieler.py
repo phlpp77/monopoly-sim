@@ -13,6 +13,9 @@ class Spieler:
         self.im_gefaengnis = False
         self.gefaengnisfrei = 0
 
+    def getPos(self):
+        return self.pos
+
     def geldaendern(self, betrag):
         self.geld += betrag
 

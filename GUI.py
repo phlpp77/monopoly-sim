@@ -174,12 +174,11 @@ class GUI:
         spielfeld = PhotoImage(file="gfx/spielfeld.gif")
         width = spielfeld.width()
         height = spielfeld.height()
-        self.canvas = Canvas(self.spielfeld, bg="black", width=width, height=height)
+        self.canvas = Canvas(self.root, bg="black", width=width, height=height)
         self.canvas.pack()
 
         # Spielfeld konfigurieren
-        canvas_spielfeld = self.canvas.create_image(width / 2, height / 2, image=spielfeld)
-        canvas_spielfeld.pack()
+        self.canvas.create_image(width / 2, height / 2, image=spielfeld)
         # Figuren konfigurieren
         figuren = [PhotoImage(file="gfx/figur0.gif"), PhotoImage(file="gfx/figur1.gif"),
                    PhotoImage(file="gfx/figur2.gif"),
@@ -187,6 +186,7 @@ class GUI:
                    PhotoImage(file="gfx/figur5.gif")]
         for x in range(1, anzahl + 1):
             self.spielerfiguren.append(self.canvas.create_image(width * 0.937, height * 0.5937, image=figuren[x]))
+        self.root.mainloop()
 
     # Figuren auf eine neue Position verschieben
     def __pos_aendern(self, figur, endkoordinaten):
