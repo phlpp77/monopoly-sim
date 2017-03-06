@@ -33,7 +33,7 @@ class SpielStarten:
             for i in spiel:
                 # Wenn Spieler nicht im Gefängnis ist wird gewürfelt
                 i.im_gefaengnis is False and i.wuerfeln()
-                self.gui.spielfeldpos_aendern(i, Spieler.getPos(i))
+                self.gui.spielfeldpos_aendern(spiel.index(i), Spieler.getPos(i))
                 i.feldchecken(self.spiel)
                 # wenn Spieler unter 1 Euro hat wird er aus dem Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:

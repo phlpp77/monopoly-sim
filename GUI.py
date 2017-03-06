@@ -52,6 +52,10 @@ class GUI:
         sk.grid(row=1, column=1)
         sp.grid(row=2, column=1)
         wdh.grid(row=3, column=1)
+        # Standartmäßiger Inputfeldtext
+        sk.insert(END, "1500")
+        sp.insert(END, "0")
+        wdh.insert(END, "2")
         # Schieberegler fuer Anzahl der Spieler (2-6)
         Label(self.hauptfenster, text="Spierleranzahl").grid(row=4)
         global sa
@@ -166,7 +170,7 @@ class GUI:
         # Label(self.hauptfenster, text=endtext).grid(row=6, column=1)
 
     def spielanimation(self, anzahl):
-        self.root = Toplevel()
+        self.root = Tk()
         self.spielerfiguren = []
         self.positionen = []
         # Tk setup
