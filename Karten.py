@@ -1,3 +1,32 @@
+class NichtHaus:
+    # Alle besonderen Felder, die nicht käuflich zu erwerben sind
+    # hierbei wird nur der typ übergeben, um unnötige Klassen zu vermeiden
+    def __init__(self, typ):
+        self.typ = typ
+        self.kartentyp = "anderes"
+
+    @staticmethod
+    def bebaubar():
+        return False
+
+    @staticmethod
+    def kaufbar():
+        return False
+
+    def besitzer_abrufen(self):
+        if self.typ == "Einkommenssteuer" or self.typ == "Zusatzsteuer":
+            return "Staat"
+        else:
+            return ""
+
+    def mieten_abrufen(self):
+        if self.typ == "Einkommenssteuer":
+            return 200
+        elif self.typ == "Zusatzsteuer":
+            return 100
+
+
+# Superklasse der kaufbaren Karten
 class HausKarten:
     def __init__(self, preis, mieten, baukosten, farbe):
         self.preis = preis
@@ -33,34 +62,7 @@ class HausKarten:
         return self.mieten[self.haeuser]
 
 
-class NichtHaus:
-    # Alle besonderen Felder, die nicht käuflich zu erwerben sind
-    # hierbei wird nur der typ übergeben, um unnötige Klassen zu vermeiden
-    def __init__(self, typ):
-        self.typ = typ
-        self.kartentyp = "anderes"
-
-    @staticmethod
-    def bebaubar():
-        return False
-
-    @staticmethod
-    def kaufbar():
-        return False
-
-    def besitzer_abrufen(self):
-        if self.typ == "Einkommenssteuer" or self.typ == "Zusatzsteuer":
-            return "Staat"
-        else:
-            return ""
-
-    def mieten_abrufen(self):
-        if self.typ == "Einkommenssteuer":
-            return 200
-        elif self.typ == "Zusatzsteuer":
-            return 100
-
-
+# Unterklassen
 class Werke(HausKarten):
     def __init__(self):
         self.preis = 150

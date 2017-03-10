@@ -1,4 +1,4 @@
-from Spielfeld import spielfeld
+from Spielfeld import Spielfeld
 from random import randint
 from random import shuffle
 
@@ -25,7 +25,7 @@ class Spieler:
     def feldchecken(self, spiel):
         # um unnoetigen Code zu verhindern werden oft gebrauchte Funktionen als Variablen abgespeichert
         self.spiel = spiel
-        position = spielfeld.feld[self.pos]
+        position = Spielfeld.feld[self.pos]
         besitzer = position.besitzer_abrufen()
 
         # Gucken ob das feld kaufbar ist (HausKarten, Werke und Bahnhoefe)
@@ -37,7 +37,7 @@ class Spieler:
             # wenn das feld einem selbst gehoert und bebaubar ist wird entschieden, ob ein Haus gebaut werden soll
             elif besitzer == self.name and position.bebaubar() is True:
                 # ueberprufen ob man alle 3 felder besitzt so dass man bauen kann
-                if self.anzahl_in_besitz[position.farbe] == spielfeld.feldhaeufigkeiten[position.farbe]:
+                if self.anzahl_in_besitz[position.farbe] == Spielfeld.feldhaeufigkeiten[position.farbe]:
                     # man kann nur 4 haeuser und 1 Hotel haben, also insgesamt 5 Mal bauen
                     if position.haeuser < 5:
                         self.bauentscheidung()
@@ -65,7 +65,7 @@ class Spieler:
                             miete = position.mieten_abrufen()
                             farbe = position.farbe
                             haeuser = position.haeuser
-                            if self.anzahl_in_besitz[farbe] == spielfeld.feldhaeufigkeiten[farbe] and haeuser == 0:
+                            if self.anzahl_in_besitz[farbe] == Spielfeld.feldhaeufigkeiten[farbe] and haeuser == 0:
                                 miete *= 2
 
                         # Bezahlen der Miete, Abziehen der Miete vom eigenen Konto
@@ -230,11 +230,11 @@ class Spieler:
                 gkartenzaehler += 1
 
     def kaufentscheidung(self):
-        position = spielfeld.feld[self.pos]
+        position = Spielfeld.feld[self.pos]
         if randint(1, 100) <= 50:
             self.kaufen()
 
-        elif self.anzahl_in_besitz[position.farbe] == spielfeld.feldhaeufigkeiten[position.farbe] - 1:
+        elif self.anzahl_in_besitz[position.farbe] == Spielfeld.feldhaeufigkeiten[position.farbe] - 1:
             self.kaufen()
         # wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
         elif self.anzahl_in_besitz[position.farbe] == 1:
@@ -242,13 +242,13 @@ class Spieler:
                 self.kaufen()
 
     def kaufen(self):
-        position = spielfeld.feld[self.pos]
+        position = Spielfeld.feld[self.pos]
         position.gekauft(self.name)
         self.geld -= position.preis
         self.anzahl_in_besitz[position.farbe] += 1
 
     def bauentscheidung(self):
-        position = spielfeld.feld[self.pos]
+        position = Spielfeld.feld[self.pos]
         if randint(1, 100) == 90:
             position.bauen()
             self.geldaendern(-position.baukosten)
@@ -257,7 +257,7 @@ class Spieler:
         wuerfel1 = randint(1, 6)
         wuerfel2 = randint(1, 6)
         self.wurf = wuerfel1 + wuerfel2
-        laenge = len(spielfeld.feld)
+        laenge = len(Spielfeld.feld)
         self.positionaendern(self.wurf)
         # Ueberpruefen ob es ein Pasch ist
         if wuerfel1 == wuerfel2:
@@ -297,7 +297,7 @@ class Spieler:
         self.pos = endpos
 
     def renovieren(self):
-        for i in spielfeld.feld:
+        for i in Spielfeld.feld:
             if i.besitzer_abrufen() == self.name:
                 if i.kartentyp == "Haus":
                     # wenn man 6 Haueser gebaut hat ist es effektiv ein Hotel, sonst sind es nur haeuser

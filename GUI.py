@@ -1,5 +1,5 @@
 from Spieler import Spieler
-from Spielfeld import spielfeld
+from Spielfeld import Spielfeld
 from tkinter import *
 from tkinter import messagebox
 import time
@@ -61,6 +61,7 @@ class GUI:
         global sa
         sa = Scale(self.hauptfenster, from_=2, to=6, orient=HORIZONTAL)
         sa.grid(row=4, column=1)
+        sa.set(4)
         # Start / Überprüfung der Werte
         start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, fg="white",
                        bg="black")
@@ -172,9 +173,15 @@ class GUI:
     def spielanimation(self, anzahl):
         self.root = Tk()
         self.spielerfiguren = []
-        self.positionen = []
+        # Testpositionen für das ganze Spielfeld (40 Positionen)
+        self.positionen = [[402, 855], [955, 494], [912, 77], [927, 440], [191, 798], [151, 501], [956, 843],
+                           [851, 635], [985, 137], [480, 163], [294, 222], [681, 336], [10, 700], [360, 559],
+                           [833, 937], [500, 126], [154, 776], [845, 538], [1, 83], [109, 242], [467, 614], [537, 191],
+                           [543, 315], [482, 736], [737, 80], [554, 451], [575, 673], [966, 120], [389, 839],
+                           [267, 392], [965, 152], [803, 777], [821, 306], [317, 890], [586, 316], [162, 564],
+                           [142, 347], [759, 578], [694, 669]]
         # Tk setup
-        self.spielfeld = Frame(self.root)
+        self.Spielfeld = Frame(self.root)
         spielfeld = PhotoImage(file="gfx/spielfeld.gif")
         width = spielfeld.width()
         height = spielfeld.height()
@@ -185,11 +192,11 @@ class GUI:
         self.canvas.create_image(width / 2, height / 2, image=spielfeld)
         # Figuren konfigurieren
         figuren = [PhotoImage(file="gfx/figur0.gif"), PhotoImage(file="gfx/figur1.gif"),
-                   PhotoImage(file="gfx/figur2.gif"),
-                   PhotoImage(file="gfx/figur3.gif"), PhotoImage(file="gfx/figur4.gif"),
-                   PhotoImage(file="gfx/figur5.gif")]
+                   PhotoImage(file="gfx/figur2.gif"), PhotoImage(file="gfx/figur3.gif"),
+                   PhotoImage(file="gfx/figur4.gif"), PhotoImage(file="gfx/figur5.gif")]
         for x in range(1, anzahl + 1):
-            self.spielerfiguren.append(self.canvas.create_image(width * 0.937, height * 0.5937, image=figuren[x]))
+            self.spielerfiguren.append(self.canvas.create_image(402, 855, image=figuren[x]))
+        print(self.canvas.coords(self.spielerfiguren[1]))
         self.root.mainloop()
 
     # Figuren auf eine neue Position verschieben
@@ -200,13 +207,14 @@ class GUI:
         self.root.update()
 
     def spielfeldpos_aendern(self, figur, endpos):
+        print(self.canvas.coords(self.spielerfiguren[figur]))
         anfangspos = self.positionen.index(self.canvas.coords(self.spielerfiguren[figur]))
         if endpos > anfangspos:
             for i in range(anfangspos, endpos):
                 self.__pos_aendern(figur, self.positionen[i])
                 time.sleep(0.1)
         else:
-            for i in range(anfangspos, len(spielfeld.feld) - 1):
+            for i in range(anfangspos, len(Spielfeld.feld) - 1):
                 self.__pos_aendern(figur, self.positionen[i])
                 time.sleep(0.1)
             for i in range(endpos):
@@ -225,7 +233,7 @@ class Spiel:
 
     @staticmethod
     def spielerzurücksetzen(name):
-        for x in spielfeld.feld:
+        for x in Spielfeld.feld:
             if x.kartentyp != "anderes":
                 if x.besitzer == name:
                     x.besitzer = ""
@@ -247,7 +255,7 @@ class Spiel:
                 # wenn Spieler unter 1 Euro hat wird er aus Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:
                     # print(i.name, "ist aus dem Spiel")
-                    for x in spielfeld.feld:
+                    for x in Spielfeld.feld:
                         if x.kartentyp != "anderes":
                             if x.besitzer == i.name:
                                 x.besitzer = ""
