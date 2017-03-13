@@ -238,33 +238,3 @@ class Spiel:
                 if x.besitzer == name:
                     x.besitzer = ""
                     x.Haeuser = 0
-
-    '''def schleife(self):
-        # die verschiedenen Spieler spielen solange bis der Sieger fest steht
-        gewinnerstehtnichtfest = True
-        while gewinnerstehtnichtfest:
-            for i in self.spiel:
-                if i.im_gefaengnis is False:
-                    i.wuerfeln()
-                    # gui.spielfeldpos_aendern(self.spiel.index(i), i.pos)
-                i.feldchecken(self)
-                # print("Name:", i.name)
-                # print("Geld:", i.geld())
-                # print()
-
-                # wenn Spieler unter 1 Euro hat wird er aus Spiel entfernt und seine Strassen wieder kaufbar gemacht
-                if i.geld < 1:
-                    # print(i.name, "ist aus dem Spiel")
-                    for x in Spielfeld.feld:
-                        if x.kartentyp != "anderes":
-                            if x.besitzer == i.name:
-                                x.besitzer = ""
-                                x.Haeuser = 0
-                    del self.spiel[self.spiel.index(i)]
-
-                # wenn nur noch 1 Spieler im Spiel ist ist das Spiel zuende, die Schleife wird beendet
-                if len(self.spiel) == 1:
-                    gewinnerstehtnichtfest = False
-
-        # print(self.spiel[0].name, "ist der Gewinner mit", self.spiel[0].geld, "Euro")
-        return self.spiel[0].geld'''

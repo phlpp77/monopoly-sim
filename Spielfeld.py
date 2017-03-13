@@ -22,7 +22,7 @@ class Spielfeld:
     # ---Liste für NichtHäuser---
     typen = ["Los", "Gemeinschaftsfeld", "Einkommenssteuer", "Ereignisfeld", "Gefaengnis", "Gemeinschaftsfeld",
              "Frei Parken", "Ereignisfeld", "Ins Gefaengnis", "Gemeinschaftsfeld", "Ereignisfeld", "Zusatzsteuer"]
-
+    # --- Liste über der iteriert wird, um zu wissen, wielcher Typ von Straße wo hin gehört
     strassenliste = [3, 0, 3, 0, 3, 1, 0, 3, 0, 0, 3, 0, 2, 0, 0, 1, 0, 3, 0, 0, 3, 0, 3, 0, 0, 1, 0, 0, 2, 0, 3, 0, 0,
                      3, 0, 1, 3, 0, 3, 0]
 

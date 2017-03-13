@@ -21,6 +21,10 @@ class Spieler:
 
     def positionaendern(self, neue_pos):
         self.pos += neue_pos
+        laenge = len(Spielfeld.feld)
+        if self.pos >= laenge:
+            self.positionaendern(-laenge)
+            self.geld += 200
 
     def feldchecken(self, spiel):
         # um unnoetigen Code zu verhindern werden oft gebrauchte Funktionen als Variablen abgespeichert
@@ -77,8 +81,7 @@ class Spieler:
         else:
             typ = position.typ
             if typ == "Ins Gefaengnis":
-                self.pos = 10
-                self.im_gefaengnis = True
+                self.ins_gefaengnis()
 
             # nachdem man ins Gefaengnis kommt darf man sofort probieren raus zu kommen
             if typ == "Gefaengnis" and self.im_gefaengnis is True:
@@ -104,54 +107,17 @@ class Spieler:
                 global ekartenzaehler
                 global ereignisliste
 
-                # Ereignisstapel
-                def ereignis0(self):
-                    self.positionaendern(-3)
-
-                def ereignis1(self):
-                    self.geldaendern(-15)
-
-                def ereignis2(self):
-                    self.geldaendern(50)
-
-                def ereignis3(self):
-                    self.rueckevor(11)
-
-                def ereignis4(self):
-                    self.rueckevor(0)
-
-                def ereignis5(self):
-                    self.rueckevor(39)
-
-                def ereignis6(self):
-                    self.gefaengnisfrei += 1
-
-                def ereignis7(self):
-                    self.renovieren()
-
-                def ereignis8(self):
-                    self.rueckevor(11)
-
-                def ereignis9(self):
-                    self.rueckevor(15)
-
-                def ereignis10(self):
-                    self.geldaendern(150)
-
-                def ereignis11(self):
-                    self.ins_gefaengnis()
-
-                def ereignis12(self):
-                    self.geldaendern(-20)
-
-                def ereignis13(self):
-                    self.geldaendern(100)
-
-                # um die ereignisliste nur ein Mal zu deklarieren
+                # um die Ereigniskarten nur ein Mal zu deklarieren
                 if 'ereignisliste' not in globals():
-                    ereignisliste = [ereignis0, ereignis1, ereignis2, ereignis3, ereignis4, ereignis5, ereignis6,
-                                     ereignis7, ereignis8, ereignis9, ereignis10, ereignis11, ereignis12, ereignis13]
-                    # die Liste weird gemischt
+                    # Ereigniskartenaktionen definieren
+                    er_liste = [self.geldaendern, self.geldaendern, self.geldaendern, self.geldaendern,
+                                self.geldaendern, self.geldaendern, self.rueckevor, self.rueckevor, self.rueckevor,
+                                self.rueckevor, self.positionaendern, self.renovieren, self.gefaengnisfreikarte,
+                                self.ins_gefaengnis]
+                    er_werte = [-15, 50, -150, -20, 150, 100, 11, 0, 39, 15, -3, None, None, None]
+
+                    # Kombinieren beider Listen um sie shufflen zu können
+                    ereignisliste = list(zip(er_liste, er_werte))
                     shuffle(ereignisliste)
                     ekartenzaehler = 0
 
@@ -159,66 +125,28 @@ class Spieler:
                 if ekartenzaehler > len(ereignisliste) - 1:
                     ekartenzaehler = 0
                     shuffle(ereignisliste)
-                ereignisliste[ekartenzaehler](self)
+
+                e = ereignisliste[ekartenzaehler]
+                if e[1] is None:
+                    e[0]()
+                else:
+                    e[0](e[1])
                 ekartenzaehler += 1
 
             elif typ == "Gemeinschaftsfeld":
                 global gemeinschaftsliste
                 global gkartenzaehler
 
-                # Gemeinschaftsstapel
-                def gemeinschaft0(self):
-                    self.geldaendern(200)
-
-                def gemeinschaft1(self):
-                    self.geldaendern(-100)
-
-                def gemeinschaft2(self):
-                    self.geldaendern(10)
-
-                def gemeinschaft3(self):
-                    self.geldaendern(20)
-
-                def gemeinschaft4(self):
-                    self.geldaendern(-10)
-
-                def gemeinschaft5(self):
-                    self.geldaendern(-50)
-
-                def gemeinschaft6(self):
-                    self.geldaendern(25)
-
-                def gemeinschaft7(self):
-                    self.rueckevor(0)
-
-                def gemeinschaft8(self):
-                    self.rueckevor(1)
-
-                def gemeinschaft9(self):
-                    self.gefaengnisfrei += 1
-
-                def gemeinschaft10(self):
-                    self.geldaendern(10)
-
-                def gemeinschaft11(self):
-                    self.geldaendern(-50)
-
-                def gemeinschaft12(self):
-                    self.geldaendern(100)
-
-                def gemeinschaft13(self):
-                    self.ins_gefaengnis()
-
-                def gemeinschaft14(self):
-                    self.geldaendern(100)
-
                 # um die gemeinschftsliste nur ein Mal zu deklarieren
                 if 'gemeinschaftsliste' not in globals():
-                    gemeinschaftsliste = [gemeinschaft0, gemeinschaft1, gemeinschaft2, gemeinschaft3, gemeinschaft4,
-                                          gemeinschaft5, gemeinschaft6, gemeinschaft7, gemeinschaft8, gemeinschaft9,
-                                          gemeinschaft10, gemeinschaft11, gemeinschaft12, gemeinschaft13,
-                                          gemeinschaft14]
-                    # die Liste weird gemischt
+                    # Gemeinschftskartenaktionen definieren
+                    gem_liste = [self.geldaendern, self.geldaendern, self.geldaendern, self.geldaendern,
+                                 self.geldaendern, self.geldaendern, self.geldaendern, self.geldaendern,
+                                 self.geldaendern, self.geldaendern, self.geldaendern, self.rueckevor, self.rueckevor,
+                                 self.gefaengnisfreikarte, self.ins_gefaengnis]
+
+                    gem_werte = [200, -100, 10, 20, -10, -50, 25, 10, -50, 100, 100, 0, 1, None, None]
+                    gemeinschaftsliste = list(zip(gem_liste, gem_werte))
                     shuffle(gemeinschaftsliste)
                     gkartenzaehler = 0
 
@@ -226,7 +154,12 @@ class Spieler:
                 if gkartenzaehler > len(gemeinschaftsliste) - 1:
                     gkartenzaehler = 0
                     shuffle(gemeinschaftsliste)
-                gemeinschaftsliste[gkartenzaehler](self)
+
+                g = gemeinschaftsliste[gkartenzaehler]
+                if g[1] is None:
+                    g[0]()
+                else:
+                    g[0](g[1])
                 gkartenzaehler += 1
 
     def kaufentscheidung(self):
@@ -249,7 +182,7 @@ class Spieler:
 
     def bauentscheidung(self):
         position = Spielfeld.feld[self.pos]
-        if randint(1, 100) == 90:
+        if self.geld > position.baukosten:
             position.bauen()
             self.geldaendern(-position.baukosten)
 
@@ -257,14 +190,10 @@ class Spieler:
         wuerfel1 = randint(1, 6)
         wuerfel2 = randint(1, 6)
         self.wurf = wuerfel1 + wuerfel2
-        laenge = len(Spielfeld.feld)
         self.positionaendern(self.wurf)
         # Ueberpruefen ob es ein Pasch ist
         if wuerfel1 == wuerfel2:
             self.wuerfeln()
-        if self.pos >= laenge:
-            self.positionaendern(-laenge)
-            self.geld += 200
 
     def gefaengniswuerfeln(self):
         i = 0
@@ -279,7 +208,7 @@ class Spieler:
                 self.positionaendern(wurf1 + wurf2)
                 self.wuerfeln()
                 self.im_gefaengnis = False
-                i += 1
+            i += 1
 
         if self.im_gefaengnis is True and self.gefaengnisfrei > 0:
             self.im_gefaengnis = False
@@ -287,8 +216,11 @@ class Spieler:
             self.wuerfeln()
 
     def ins_gefaengnis(self):
-        self.pos = 9
+        self.pos = 10
         self.im_gefaengnis = True
+
+    def gefaengnisfreikarte(self):
+        self.gefaengnisfrei += 1
 
     def rueckevor(self, endpos):
         # wenn die Endposition hinter einem liegt muss man ueber Los und 200 einziehen

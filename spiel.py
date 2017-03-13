@@ -16,10 +16,12 @@ class SpielStarten:
             s = [i for i in range(1, sa + 1)]
             self.spiel = Spiel(s, sk, sp)
             # self.gui.spielanimation(len(s))
-            for i in range(sw):
+            i = 0
+            while i <= sw:
                 self.spiel.__init__(s, sk, sp)
                 self.auswertungsliste.append(self.schleife())
-            # self.gui.auswertungstext(Auswertung.durchschnitt(self.auswertungsliste))
+                i += 1
+
             print("Durchschnittlich wurde das Spiel mit", Auswertung.durchschnitt(self.auswertungsliste), "beendet.")
 
     def schleife(self):
@@ -42,8 +44,10 @@ class SpielStarten:
             if len(spiel) == 1:
                 gewinnerstehtnichtfest = False
         print("Spieler", spiel[0].name, "gewinnt mit", spiel[0].geld)
-        return spiel[0].geld
+        geld = spiel[0].geld
         self.spiel.spielerzurücksetzen(spiel[0].name)
+        del spiel[0]
+        return geld
 
 
 class Auswertung:
