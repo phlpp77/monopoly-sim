@@ -1,6 +1,7 @@
 from GUI import *
 
 
+# ---für die Spielfeldanzeige Zeilen 19+37 auskommentieren---
 class SpielStarten:
     def __init__(self):
         self.auswertungsliste = []
@@ -33,11 +34,11 @@ class SpielStarten:
             for i in spiel:
                 # Wenn Spieler nicht im Gefängnis ist wird gewürfelt
                 i.im_gefaengnis is False and i.wuerfeln()
-                # self.gui.spielfeldpos_aendern(spiel.index(i), i.getPos())
-                i.feldchecken(self.spiel)
+                # self.gui.spielfeldpos_aendern(spiel.index(i), i.get_pos())
+                i.feldchecken(self.spiel.spiel)
                 # wenn Spieler unter 1 Euro hat wird er aus dem Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:
-                    print(i.name, "ist aus dem Spiel")
+                    #print(i.name, "ist aus dem Spiel")
                     self.spiel.spielerzurücksetzen(i.name)
                     del spiel[spiel.index(i)]
             # wenn nur noch 1 Spieler im Spiel ist wird die Schleife beendet

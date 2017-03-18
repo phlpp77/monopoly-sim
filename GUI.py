@@ -196,7 +196,6 @@ class GUI:
                    PhotoImage(file="gfx/figur4.gif"), PhotoImage(file="gfx/figur5.gif")]
         for x in range(1, anzahl + 1):
             self.spielerfiguren.append(self.canvas.create_image(402, 855, image=figuren[x]))
-        print(self.canvas.coords(self.spielerfiguren[1]))
         self.root.mainloop()
 
     # Figuren auf eine neue Position verschieben
@@ -224,7 +223,6 @@ class GUI:
 
 class Spiel:
     def __init__(self, spieler, startgeld, startpos):
-        self.abgaben = 0
         self.spiel = []
         # alle Teilnehmer in eine Liste eintragen
         for i in spieler:

@@ -12,8 +12,10 @@ class Spieler:
         self.anzahl_in_besitz = [0] * 10
         self.im_gefaengnis = False
         self.gefaengnisfrei = 0
+        global abgaben
+        abgaben = 0
 
-    def getPos(self):
+    def get_pos(self):
         return self.pos
 
     def geldaendern(self, betrag):
@@ -28,6 +30,8 @@ class Spieler:
 
     def feldchecken(self, spiel):
         # um unnoetigen Code zu verhindern werden oft gebrauchte Funktionen als Variablen abgespeichert
+        global abgaben
+        # Spielerliste wird übergeben
         self.spiel = spiel
         position = Spielfeld.feld[self.pos]
         besitzer = position.besitzer_abrufen()
@@ -53,7 +57,7 @@ class Spieler:
             # feld gehoert anderem Spieler
             else:
                 # nachgucken welchem Spieler das feld gehoert
-                for i in self.spiel.spiel:
+                for i in self.spiel:
                     # Wenn der Spieler gefunden wurde:
                     if i.name == besitzer:
 
@@ -89,15 +93,15 @@ class Spieler:
 
             # auf Frei Parken kriegt man alle Abgaben aus den Steuern und Ereignis/Gemeinschaftskarten
             elif typ == "Frei Parken":
-                self.geldaendern(self.spiel.abgaben)
-                self.spiel.abgaben = 0
+                self.geldaendern(abgaben)
+                abgaben = 0
 
             elif typ == "Einkommenssteuer":
                 self.geldaendern(-200)
-                self.spiel.abgaben += 200
+                abgaben += 200
             elif typ == "Zusatzsteuer":
                 self.geldaendern(-100)
-                self.spiel.abgaben += 100
+                abgaben += 100
 
             # wenn man auf Los kommt kriegt man 2x den ueblichen Betrag
             elif typ == "Los":
@@ -208,12 +212,14 @@ class Spieler:
                 self.positionaendern(wurf1 + wurf2)
                 self.wuerfeln()
                 self.im_gefaengnis = False
+                self.feldchecken(self.spiel)
             i += 1
 
         if self.im_gefaengnis is True and self.gefaengnisfrei > 0:
             self.im_gefaengnis = False
             self.gefaengnisfrei -= 1
             self.wuerfeln()
+            self.feldchecken(self.spiel)
 
     def ins_gefaengnis(self):
         self.pos = 10
