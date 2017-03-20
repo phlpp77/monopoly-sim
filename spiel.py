@@ -5,21 +5,27 @@ from GUI import *
 class SpielStarten:
     def __init__(self):
         self.auswertungsliste = []
+
         self.gui = GUI()
         self.gui.erstellen()
         startbar = self.gui.startbar()
+        self.animation = Animation()
 
         if startbar is True:
             sp = self.gui.getStartPos()
             sk = self.gui.getStartKap()
             sa = self.gui.getSpielerAnzahl()
             sw = self.gui.getWdh()
-            s = [i for i in range(1, sa + 1)]
-            self.spiel = Spiel(s, sk, sp)
-            # self.gui.spielanimation(len(s))
+            spieler = [i for i in range(0, sa)]
+            self.spiel = Spiel(spieler, sk, sp)
+            self.animation.figuren_erstellen(sa)
+
+            self.animation.setDaemon(True)
+            self.animation.run()
+
             i = 0
             while i <= sw:
-                self.spiel.__init__(s, sk, sp)
+                self.spiel.__init__(spieler, sk, sp)
                 self.auswertungsliste.append(self.schleife())
                 i += 1
 
@@ -34,7 +40,8 @@ class SpielStarten:
             for i in spiel:
                 # Wenn Spieler nicht im Gefängnis ist wird gewürfelt
                 i.im_gefaengnis is False and i.wuerfeln()
-                # self.gui.spielfeldpos_aendern(spiel.index(i), i.get_pos())
+                print("hat gewürfelt")
+                self.animation.spielfeldpos_aendern(spiel.index(i), i.get_pos())
                 i.feldchecken(self.spiel.spiel)
                 # wenn Spieler unter 1 Euro hat wird er aus dem Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:

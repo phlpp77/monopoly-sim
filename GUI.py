@@ -3,8 +3,21 @@ from Spielfeld import Spielfeld
 from tkinter import *
 from tkinter import messagebox
 import time
+import threading
 from os import system
 from platform import system as platform
+
+
+class GUIThread(threading.Thread):
+    def __init__(self):
+        self._stop = False
+        threading.Thread.__init__(self)
+
+    def run(self):
+        pass
+
+    def stop(self):
+        self._stop = True
 
 
 class GUI:
@@ -57,7 +70,7 @@ class GUI:
         sp.insert(END, "0")
         wdh.insert(END, "2")
         # Schieberegler fuer Anzahl der Spieler (2-6)
-        Label(self.hauptfenster, text="Spierleranzahl").grid(row=4)
+        Label(self.hauptfenster, text="Spieleranzahl").grid(row=4)
         global sa
         sa = Scale(self.hauptfenster, from_=2, to=6, orient=HORIZONTAL)
         sa.grid(row=4, column=1)
@@ -170,7 +183,9 @@ class GUI:
 
         # Label(self.hauptfenster, text=endtext).grid(row=6, column=1)
 
-    def spielanimation(self, anzahl):
+
+class Animation(GUIThread):
+    def __init__(self):
         self.root = Tk()
         self.spielerfiguren = []
         # Testpositionen für das ganze Spielfeld (40 Positionen)
@@ -180,7 +195,7 @@ class GUI:
                            [543, 315], [482, 736], [737, 80], [554, 451], [575, 673], [966, 120], [389, 839],
                            [267, 392], [965, 152], [803, 777], [821, 306], [317, 890], [586, 316], [162, 564],
                            [142, 347], [759, 578], [694, 669]]
-        # Tk setup
+       # Tk setup
         self.Spielfeld = Frame(self.root)
         spielfeld = PhotoImage(file="gfx/spielfeld.gif")
         width = spielfeld.width()
@@ -190,12 +205,20 @@ class GUI:
 
         # Spielfeld konfigurieren
         self.canvas.create_image(width / 2, height / 2, image=spielfeld)
+
+        GUIThread.__init__(self)
+
+    def figuren_erstellen(self, anzahl):
         # Figuren konfigurieren
         figuren = [PhotoImage(file="gfx/figur0.gif"), PhotoImage(file="gfx/figur1.gif"),
                    PhotoImage(file="gfx/figur2.gif"), PhotoImage(file="gfx/figur3.gif"),
                    PhotoImage(file="gfx/figur4.gif"), PhotoImage(file="gfx/figur5.gif")]
-        for x in range(1, anzahl + 1):
-            self.spielerfiguren.append(self.canvas.create_image(402, 855, image=figuren[x]))
+        for x in range(0, anzahl):
+            self.spielerfiguren.append(self.canvas.create_image(402, 855, image=figuren[x+1]))
+            print("Spieler: {} id: {} koordinaten: {}".format(x, self.spielerfiguren[x], self.canvas.coords(self.spielerfiguren[x])))
+
+    def run(self):
+        print("Starte Animation")
         self.root.mainloop()
 
     # Figuren auf eine neue Position verschieben
@@ -206,6 +229,7 @@ class GUI:
         self.root.update()
 
     def spielfeldpos_aendern(self, figur, endpos):
+        print(figur)
         print(self.canvas.coords(self.spielerfiguren[figur]))
         anfangspos = self.positionen.index(self.canvas.coords(self.spielerfiguren[figur]))
         if endpos > anfangspos:
