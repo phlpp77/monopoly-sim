@@ -5,6 +5,8 @@ from random import shuffle
 
 class Spieler:
     def __init__(self, name, anfangsgeld, anfangs_pos):
+        global zeit
+        zeit = 0
         self.geld = anfangsgeld
         self.pos = anfangs_pos
         self.name = name
@@ -22,6 +24,8 @@ class Spieler:
         self.geld += betrag
 
     def positionaendern(self, neue_pos):
+        global zeit
+        zeit += randint(2, 20)
         self.pos += neue_pos
         laenge = len(Spielfeld.feld)
         if self.pos >= laenge:
@@ -167,6 +171,8 @@ class Spieler:
                 gkartenzaehler += 1
 
     def kaufentscheidung(self):
+        global zeit
+        zeit += randint(30, 60)
         position = Spielfeld.feld[self.pos]
         if randint(1, 100) <= 50:
             self.kaufen()
@@ -179,18 +185,24 @@ class Spieler:
                 self.kaufen()
 
     def kaufen(self):
+        global zeit
+        zeit += 45
         position = Spielfeld.feld[self.pos]
         position.gekauft(self.name)
         self.geld -= position.preis
         self.anzahl_in_besitz[position.farbe] += 1
 
     def bauentscheidung(self):
+        global zeit
+        zeit += randint(5, 45)
         position = Spielfeld.feld[self.pos]
         if self.geld > position.baukosten:
             position.bauen()
             self.geldaendern(-position.baukosten)
 
     def wuerfeln(self):
+        global zeit
+        zeit += 10
         wuerfel1 = randint(1, 6)
         wuerfel2 = randint(1, 6)
         self.wurf = wuerfel1 + wuerfel2
@@ -200,6 +212,8 @@ class Spieler:
             self.wuerfeln()
 
     def gefaengniswuerfeln(self):
+        global zeit
+        zeit += 30
         i = 0
         self.im_gefaengnis = True
 
@@ -243,3 +257,12 @@ class Spieler:
                         self.geldaendern(i.haeuser * 25)
                     else:
                         self.geldaendern(100)
+
+    def get_spielzeit(self, einheit):
+        global zeit
+        if einheit == "s":
+            return zeit
+        elif einheit == "m":
+            return zeit/60
+        elif einheit == "h":
+            return zeit/3600

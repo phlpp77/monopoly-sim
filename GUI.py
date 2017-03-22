@@ -142,7 +142,6 @@ class GUI:
     def getSpielerAnzahl(self):
         return self.sa
 
-
     def auswertungstext(self, durchschnitt):
         endtext = (
             "Gewinner haben durchschnittlich", round(durchschnitt, 2), "Euro, in einem Spiel mit",

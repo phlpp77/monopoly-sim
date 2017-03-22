@@ -1,4 +1,5 @@
 from GUI import *
+from Spieler import *
 
 
 # ---für die Spielfeldanzeige Zeilen 19+37 auskommentieren---
@@ -9,7 +10,7 @@ class SpielStarten:
         self.gui = GUI()
         self.gui.erstellen()
         startbar = self.gui.startbar()
-        self.animation = Animation()
+        # self.animation = Animation()
 
         if startbar is True:
             sp = self.gui.getStartPos()
@@ -18,10 +19,10 @@ class SpielStarten:
             sw = self.gui.getWdh()
             spieler = [i for i in range(0, sa)]
             self.spiel = Spiel(spieler, sk, sp)
-            self.animation.figuren_erstellen(sa)
+            # self.animation.figuren_erstellen(sa)
 
-            self.animation.setDaemon(True)
-            self.animation.run()
+            # self.animation.setDaemon(True)
+            # self.animation.run()
 
             i = 0
             while i <= sw:
@@ -40,12 +41,12 @@ class SpielStarten:
             for i in spiel:
                 # Wenn Spieler nicht im Gefängnis ist wird gewürfelt
                 i.im_gefaengnis is False and i.wuerfeln()
-                print("hat gewürfelt")
-                self.animation.spielfeldpos_aendern(spiel.index(i), i.get_pos())
+                # print("hat gewürfelt")
+                # self.animation.spielfeldpos_aendern(spiel.index(i), i.get_pos())
                 i.feldchecken(self.spiel.spiel)
                 # wenn Spieler unter 1 Euro hat wird er aus dem Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:
-                    #print(i.name, "ist aus dem Spiel")
+                    # print(i.name, "ist aus dem Spiel")
                     self.spiel.spielerzurücksetzen(i.name)
                     del spiel[spiel.index(i)]
             # wenn nur noch 1 Spieler im Spiel ist wird die Schleife beendet
@@ -54,6 +55,7 @@ class SpielStarten:
         print("Spieler", spiel[0].name, "gewinnt mit", spiel[0].geld)
         geld = spiel[0].geld
         self.spiel.spielerzurücksetzen(spiel[0].name)
+        print("Das Spiel hätte", round(spiel[0].get_spielzeit("h"), 2), "Stunden gebraucht")
         del spiel[0]
         return geld
 
