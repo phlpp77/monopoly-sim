@@ -3,6 +3,7 @@ from Spielfeld import Spielfeld
 from tkinter import *
 from tkinter import messagebox
 import time
+import pygame
 import threading
 from os import system
 from platform import system as platform
@@ -153,7 +154,48 @@ class GUI:
 
 
 class Animation:
-    pass
+    def __init__(self, spieleranzahl):
+        # Variablen definieren
+        spielerbilder = ["gfx/figur0.gif", "gfx/figur1.gif", "gfx/figur2.gif", "gfx/figur3.gif", "gfx/figur4.gif",
+                         "gfx/figur5.gif"]
+        self.positionen = [(100, 100), (200, 200), (300, 300), (400, 400)]
+
+        # Initialisieren vom Fenster
+        pygame.init()
+        self.spielfeld = pygame.display.set_mode((1000, 1000))
+        # Hintergrund anzeigen
+        self.hintergrund = pygame.image.load("gfx/spielfeld.gif")
+        self.spielfeld.blit(self.hintergrund, (0, 0))
+
+        #  Spielerbilder laden
+        self.spieler = []
+        for i in range(spieleranzahl):
+            bild = pygame.image.load(spielerbilder[i])
+            self.spieler.append(pygame.image.load(spielerbilder[i]))
+            self.spielfeld.blit(self.spieler[-1], (0, 0))
+        pygame.display.flip()
+        print(self.spieler)
+
+    def pos_aendern(self, figur, endpos):
+        feld = self.spielfeld
+        spieler = self.spieler
+        figur = spieler[figur]
+        endpos = self.positionen[endpos]
+
+        # aktuelle Koordinatenherausfinden
+        figur_koor = figur.get_rect()
+        koords = x, y = figur_koor.x, figur_koor.y
+        # an Position der Figur wird der Hintergrund überschrieben
+        feld.blit(self.hintergrund, (0, 0), pygame.Rect(x, y, 50, 50))
+
+        # falls eine andere Figur noch da war wird diese wieder hervorgehoben
+        for i in spieler:
+            rec = i.get_rect()
+            andere_koords = x1, y1 = rec.x, rec.y
+            if spieler.index(i) != spieler.index(figur) and x1 == x and y1 == y1:
+                feld.blit(i, andere_koords)
+        feld.blit(figur, endpos)
+        pygame.display.flip()
 
 
 class Spiel:
