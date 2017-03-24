@@ -18,7 +18,8 @@ class SpielStarten:
             sa = self.gui.getSpielerAnzahl()
             sw = self.gui.getWdh()
             # print(self.gui.getWdh())
-            spieler = [i for i in range(0, sa)]
+            spieler = [i for i in range(sa)]
+            self.animation = Animation(sa)
             self.spiel = Spiel(spieler, sk, sp)
             # self.animation.figuren_erstellen(sa)
 
@@ -42,6 +43,7 @@ class SpielStarten:
             for i in spiel:
                 # Wenn Spieler nicht im Gefängnis ist wird gewürfelt
                 i.im_gefaengnis is False and i.wuerfeln()
+                self.animation.pos_aendern(spiel.index(i), i.pos)
                 # print("hat gewürfelt")
                 # self.animation.spielfeldpos_aendern(spiel.index(i), i.get_pos())
                 i.feldchecken(self.spiel.spiel)

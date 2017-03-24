@@ -158,43 +158,41 @@ class Animation:
         # Variablen definieren
         spielerbilder = ["gfx/figur0.gif", "gfx/figur1.gif", "gfx/figur2.gif", "gfx/figur3.gif", "gfx/figur4.gif",
                          "gfx/figur5.gif"]
-        self.positionen = [(100, 100), (200, 200), (300, 300), (400, 400)]
+        self.positionen = [(1050, 1050), (950, 1050), (850, 1050), (750, 1050), (650, 1050), (550, 1050), (450, 1050),
+                           (350, 1050), (250, 1050), (150, 1050), (50, 1050), (50, 950), (50, 850), (50, 750),
+                           (50, 650), (50, 550), (50, 450), (50, 350), (50, 250), (50, 150), (150, 50), (250, 50),
+                           (350, 50), (450, 50), (550, 50), (650, 50), (750, 50), (850, 50), (950, 50), (1050, 50),
+                           (1050, 150), (1050, 250), (1050, 350), (1050, 450), (1050, 550), (1050, 650), (1050, 750),
+                           (1050, 850), (1050, 950)]
+        print(self.positionen[39])
 
         # Initialisieren vom Fenster
         pygame.init()
         self.spielfeld = pygame.display.set_mode((1000, 1000))
         # Hintergrund anzeigen
-        self.hintergrund = pygame.image.load("gfx/spielfeld.gif")
+        self.hintergrund = pygame.image.load("gfx/spielfeld.png")
         self.spielfeld.blit(self.hintergrund, (0, 0))
 
         #  Spielerbilder laden
         self.spieler = []
+        self.pos = []
         for i in range(spieleranzahl):
-            bild = pygame.image.load(spielerbilder[i])
             self.spieler.append(pygame.image.load(spielerbilder[i]))
-            self.spielfeld.blit(self.spieler[-1], (0, 0))
+            self.spielfeld.blit(self.spieler[-1], self.positionen[0])
+            self.pos.append(self.positionen[0])
         pygame.display.flip()
-        print(self.spieler)
 
     def pos_aendern(self, figur, endpos):
         feld = self.spielfeld
         spieler = self.spieler
-        figur = spieler[figur]
-        endpos = self.positionen[endpos]
+        self.pos[figur] = self.positionen[endpos]
 
-        # aktuelle Koordinatenherausfinden
-        figur_koor = figur.get_rect()
-        koords = x, y = figur_koor.x, figur_koor.y
-        # an Position der Figur wird der Hintergrund überschrieben
-        feld.blit(self.hintergrund, (0, 0), pygame.Rect(x, y, 50, 50))
-
-        # falls eine andere Figur noch da war wird diese wieder hervorgehoben
-        for i in spieler:
-            rec = i.get_rect()
-            andere_koords = x1, y1 = rec.x, rec.y
-            if spieler.index(i) != spieler.index(figur) and x1 == x and y1 == y1:
-                feld.blit(i, andere_koords)
-        feld.blit(figur, endpos)
+        # Hintergrund wird hervorgeholt um die Spielfiguren zu verdecken
+        feld.blit(self.hintergrund, (0, 0))
+        i = 0
+        while i < len(spieler):
+            feld.blit(spieler[i], self.pos[i])
+            i += 1
         pygame.display.flip()
 
 
