@@ -7,6 +7,8 @@ import pygame
 import threading
 from os import system
 from platform import system as platform
+import os
+
 
 
 class GUI:
@@ -28,7 +30,9 @@ class GUI:
         h = 720
         ws = self.root.winfo_screenwidth()
         hs = self.root.winfo_screenheight()
+        global x
         x = (ws / 2) - (w / 2)
+        global y
         y = (hs / 2) - (h / 2)
         self.root.geometry("%dx%d+%d+%d" % (w, h, x, y))
         self.root.config(bg='lightgrey')
@@ -160,15 +164,17 @@ class Animation:
                          "gfx/figur5.gif"]
         self.positionen = [(1050, 1050), (950, 1050), (850, 1050), (750, 1050), (650, 1050), (550, 1050), (450, 1050),
                            (350, 1050), (250, 1050), (150, 1050), (50, 1050), (50, 950), (50, 850), (50, 750),
-                           (50, 650), (50, 550), (50, 450), (50, 350), (50, 250), (50, 150), (150, 50), (250, 50),
-                           (350, 50), (450, 50), (550, 50), (650, 50), (750, 50), (850, 50), (950, 50), (1050, 50),
-                           (1050, 150), (1050, 250), (1050, 350), (1050, 450), (1050, 550), (1050, 650), (1050, 750),
-                           (1050, 850), (1050, 950)]
-        print(self.positionen[39])
+                           (50, 650), (50, 550), (50, 450), (50, 350), (50, 250), (50, 150), (50, 50), (150, 50),
+                           (250, 50), (350, 50), (450, 50), (550, 50), (650, 50), (750, 50), (850, 50), (950, 50),
+                           (1050, 50), (1050, 150), (1050, 250), (1050, 350), (1050, 450), (1050, 550), (1050, 650),
+                           (1050, 750), (1050, 850), (1050, 950)]
 
         # Initialisieren vom Fenster
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
+        #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y-150)
+
         pygame.init()
-        self.spielfeld = pygame.display.set_mode((1000, 1000))
+        self.spielfeld = pygame.display.set_mode((1100, 1100))
         # Hintergrund anzeigen
         self.hintergrund = pygame.image.load("gfx/spielfeld.png")
         self.spielfeld.blit(self.hintergrund, (0, 0))
