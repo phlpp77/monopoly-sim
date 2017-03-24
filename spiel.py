@@ -17,6 +17,7 @@ class SpielStarten:
             sk = self.gui.getStartKap()
             sa = self.gui.getSpielerAnzahl()
             sw = self.gui.getWdh()
+            # print(self.gui.getWdh())
             spieler = [i for i in range(0, sa)]
             self.spiel = Spiel(spieler, sk, sp)
             # self.animation.figuren_erstellen(sa)
@@ -24,7 +25,7 @@ class SpielStarten:
             # self.animation.setDaemon(True)
             # self.animation.run()
 
-            i = 0
+            i = 1
             while i <= sw:
                 self.spiel.__init__(spieler, sk, sp)
                 self.auswertungsliste.append(self.schleife())
