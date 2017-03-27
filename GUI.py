@@ -163,8 +163,8 @@ class Animation:
         spielerbilder = ["gfx/figur0.png", "gfx/figur1.png", "gfx/figur2.png", "gfx/figur3.png", "gfx/figur4.png",
                          "gfx/figur5.png"]
         # um das Spielfeld variabel skalieren zu können wird die self.positionen Liste in jedem Durchgang neu erstellt
-        width = 700
-        steps = width / 100 * prozent / 11
+        width = 770
+        steps = width * prozent / 100 / 11
         self.positionen = []
 
         for i in reversed(range(11)):
@@ -175,7 +175,6 @@ class Animation:
             self.positionen.append((int(steps / 2 + i * steps), int(0.5 * steps)))
         for i in range(10):
             self.positionen.append((int(10.5 * steps), int(steps / 2 + i * steps)))
-        #print(self.positionen)
 
         # Initialisieren vom Fenster
         os.environ['SDL_VIDEO_CENTERED'] = '1'

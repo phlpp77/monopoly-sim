@@ -19,7 +19,7 @@ class SpielStarten:
             # print(self.gui.getWdh())
             spieler = [i for i in range(sa)]
             # um das Spielfenster kleiner zu öffnen die übergebene Zahl zur Animation verringern
-            self.animation = Animation(sa, 70)
+            self.animation = Animation(sa, 100)
             self.spiel = Spiel(spieler, sk, sp)
             # self.animation.figuren_erstellen(sa)
 
