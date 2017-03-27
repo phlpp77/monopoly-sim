@@ -2,7 +2,6 @@ from GUI import *
 from Spieler import *
 
 
-# ---für die Spielfeldanzeige Zeilen 19+37 auskommentieren---
 class SpielStarten:
     def __init__(self):
         self.auswertungsliste = []
@@ -19,7 +18,8 @@ class SpielStarten:
             sw = self.gui.getWdh()
             # print(self.gui.getWdh())
             spieler = [i for i in range(sa)]
-            self.animation = Animation(sa)
+            # um das Spielfenster kleiner zu öffnen die übergebene Zahl zur Animation verringern
+            self.animation = Animation(sa, 70)
             self.spiel = Spiel(spieler, sk, sp)
             # self.animation.figuren_erstellen(sa)
 

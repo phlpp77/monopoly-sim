@@ -158,23 +158,31 @@ class GUI:
 
 
 class Animation:
-    def __init__(self, spieleranzahl):
+    def __init__(self, spieleranzahl, prozent):
         # Variablen definieren
         spielerbilder = ["gfx/figur0.gif", "gfx/figur1.gif", "gfx/figur2.gif", "gfx/figur3.gif", "gfx/figur4.gif",
                          "gfx/figur5.gif"]
-        self.positionen = [(1050, 1050), (950, 1050), (850, 1050), (750, 1050), (650, 1050), (550, 1050), (450, 1050),
-                           (350, 1050), (250, 1050), (150, 1050), (50, 1050), (50, 950), (50, 850), (50, 750),
-                           (50, 650), (50, 550), (50, 450), (50, 350), (50, 250), (50, 150), (50, 50), (150, 50),
-                           (250, 50), (350, 50), (450, 50), (550, 50), (650, 50), (750, 50), (850, 50), (950, 50),
-                           (1050, 50), (1050, 150), (1050, 250), (1050, 350), (1050, 450), (1050, 550), (1050, 650),
-                           (1050, 750), (1050, 850), (1050, 950)]
+        # um das Spielfeld variabel skalieren zu können wird die self.positionen Liste in jedem Durchgang neu erstellt
+        width = 1100
+        steps = width / 100 * prozent / 11
+        self.positionen = []
+
+        for i in reversed(range(11)):
+            self.positionen.append((int(steps / 2 + i * steps), int(10.5 * steps)))
+        for i in reversed(range(10)):
+            self.positionen.append((int(steps / 2), int(steps / 2 + i * steps)))
+        for i in range(1, 10):
+            self.positionen.append((int(steps / 2 + i * steps), int(0.5 * steps)))
+        for i in range(10):
+            self.positionen.append((int(10.5 * steps), int(steps / 2 + i * steps)))
+        print(self.positionen)
 
         # Initialisieren vom Fenster
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y-150)
 
         pygame.init()
-        self.spielfeld = pygame.display.set_mode((1100, 1100))
+        self.spielfeld = pygame.display.set_mode((width, width))
         # Hintergrund anzeigen
         self.hintergrund = pygame.image.load("gfx/spielfeld.png")
         self.spielfeld.blit(self.hintergrund, (0, 0))
