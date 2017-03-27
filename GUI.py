@@ -26,8 +26,8 @@ class GUI:
         self.root.focus_force()
         self.root.title("Monopoly Simulation")
         # Fenster mittig zentrieren
-        w = 1280
-        h = 720
+        w = 500
+        h = 300
         ws = self.root.winfo_screenwidth()
         hs = self.root.winfo_screenheight()
         global x
@@ -160,10 +160,10 @@ class GUI:
 class Animation:
     def __init__(self, spieleranzahl, prozent):
         # Variablen definieren
-        spielerbilder = ["gfx/figur0.gif", "gfx/figur1.gif", "gfx/figur2.gif", "gfx/figur3.gif", "gfx/figur4.gif",
-                         "gfx/figur5.gif"]
+        spielerbilder = ["gfx/figur0.png", "gfx/figur1.png", "gfx/figur2.png", "gfx/figur3.png", "gfx/figur4.png",
+                         "gfx/figur5.png"]
         # um das Spielfeld variabel skalieren zu können wird die self.positionen Liste in jedem Durchgang neu erstellt
-        width = 1100
+        width = 700
         steps = width / 100 * prozent / 11
         self.positionen = []
 
@@ -175,7 +175,7 @@ class Animation:
             self.positionen.append((int(steps / 2 + i * steps), int(0.5 * steps)))
         for i in range(10):
             self.positionen.append((int(10.5 * steps), int(steps / 2 + i * steps)))
-        print(self.positionen)
+        #print(self.positionen)
 
         # Initialisieren vom Fenster
         os.environ['SDL_VIDEO_CENTERED'] = '1'
