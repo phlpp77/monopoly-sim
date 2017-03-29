@@ -1,5 +1,6 @@
 from GUI import *
 from Spieler import *
+from time import sleep
 
 
 class SpielStarten:
@@ -17,6 +18,7 @@ class SpielStarten:
             sa = self.gui.getSpielerAnzahl()
             sw = self.gui.getWdh()
             res = self.gui.getResolution()
+            self.zeit = self.gui.getZeit()
             # print(self.gui.getWdh())
             spieler = [i for i in range(sa)]
             # um das Spielfenster kleiner zu öffnen die übergebene Zahl zur Animation verringern
@@ -44,6 +46,7 @@ class SpielStarten:
             for i in spiel:
                 # Wenn Spieler nicht im Gefängnis ist wird gewürfelt
                 i.im_gefaengnis is False and i.wuerfeln()
+                sleep(self.zeit)
                 self.animation.pos_aendern(spiel.index(i), i.pos)
                 # print("hat gewürfelt")
                 # self.animation.spielfeldpos_aendern(spiel.index(i), i.get_pos())

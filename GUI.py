@@ -62,21 +62,33 @@ class GUI:
         sk.insert(END, "1500")
         sp.insert(END, "0")
         wdh.insert(END, "2")
+
         # Schieberegler fuer Anzahl der Spieler (2-6)
         Label(self.hauptfenster, text="Spieleranzahl").grid(row=4)
         global sa
         sa = Scale(self.hauptfenster, from_=2, to=6, orient=HORIZONTAL)
         sa.grid(row=4, column=1)
         sa.set(4)
+
+        # Schieberegler für die Skalierung der Spielfeldanzeige
         Label(self.hauptfenster, text="Skalierung Anzeige in %").grid(row=5)
         global res
         res = Scale(self.hauptfenster, from_=1, to_=100, orient=HORIZONTAL)
         res.grid(row=5, column=1)
         res.set(50)
+
+        # Schieberegler für die Geschwindigkeit
+        Label(self.hauptfenster, text="Geschwindigkeit Anzeige").grid(row=6)
+        global zeit
+        zeit = Scale(self.hauptfenster, from_=1.5, to_=0, orient=HORIZONTAL, resolution=0.1)
+        zeit.grid(row=6, column=1)
+        zeit.set(0.7)
+
+
         # Start / Überprüfung der Werte
         start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, fg="white",
                        bg="black")
-        start.grid(row=6, columnspan=2)
+        start.grid(row=7, columnspan=2)
         self.root.bind('<KeyPress-Return>', self.enter_starten)
         self.root.mainloop()
 
@@ -133,6 +145,7 @@ class GUI:
 
         self.sa = sa.get()
         self.res = res.get()
+        self.zeit = zeit.get()
 
         if startbar == 3:
             self.root.destroy()
@@ -155,6 +168,9 @@ class GUI:
 
     def getResolution(self):
         return self.res
+
+    def getZeit(self):
+        return self.zeit
 
     def auswertungstext(self, durchschnitt):
         endtext = (
