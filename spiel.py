@@ -16,10 +16,11 @@ class SpielStarten:
             sk = self.gui.getStartKap()
             sa = self.gui.getSpielerAnzahl()
             sw = self.gui.getWdh()
+            res = self.gui.getResolution()
             # print(self.gui.getWdh())
             spieler = [i for i in range(sa)]
             # um das Spielfenster kleiner zu öffnen die übergebene Zahl zur Animation verringern
-            self.animation = Animation(sa, 100)
+            self.animation = Animation(sa, res)
             self.spiel = Spiel(spieler, sk, sp)
             # self.animation.figuren_erstellen(sa)
 

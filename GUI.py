@@ -68,10 +68,15 @@ class GUI:
         sa = Scale(self.hauptfenster, from_=2, to=6, orient=HORIZONTAL)
         sa.grid(row=4, column=1)
         sa.set(4)
+        Label(self.hauptfenster, text="Skalierung Anzeige in %").grid(row=5)
+        global res
+        res = Scale(self.hauptfenster, from_=1, to_=100, orient=HORIZONTAL)
+        res.grid(row=5, column=1)
+        res.set(50)
         # Start / Überprüfung der Werte
         start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, fg="white",
                        bg="black")
-        start.grid(row=5, columnspan=2)
+        start.grid(row=6, columnspan=2)
         self.root.bind('<KeyPress-Return>', self.enter_starten)
         self.root.mainloop()
 
@@ -127,6 +132,7 @@ class GUI:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Wiederholungen)!")
 
         self.sa = sa.get()
+        self.res = res.get()
 
         if startbar == 3:
             self.root.destroy()
@@ -147,6 +153,9 @@ class GUI:
     def getSpielerAnzahl(self):
         return self.sa
 
+    def getResolution(self):
+        return self.res
+
     def auswertungstext(self, durchschnitt):
         endtext = (
             "Gewinner haben durchschnittlich", round(durchschnitt, 2), "Euro, in einem Spiel mit",
@@ -163,9 +172,12 @@ class Animation:
         spielerbilder = ["gfx/figur0.png", "gfx/figur1.png", "gfx/figur2.png", "gfx/figur3.png", "gfx/figur4.png",
                          "gfx/figur5.png"]
         # um das Spielfeld variabel skalieren zu können wird die self.positionen Liste in jedem Durchgang neu erstellt
-        width = 770
-        steps = width * prozent / 100 / 11
+        prozent /= 100
+        width = 1100
+        width = int(width * prozent)
+        steps = width / 11
         self.positionen = []
+        spieler = int(50 * prozent)
 
         for i in reversed(range(11)):
             self.positionen.append((int(steps / 2 + i * steps), int(10.5 * steps)))
@@ -184,6 +196,7 @@ class Animation:
         self.spielfeld = pygame.display.set_mode((width, width))
         # Hintergrund anzeigen
         self.hintergrund = pygame.image.load("gfx/spielfeld.png")
+        self.hintergrund = pygame.transform.scale(self.hintergrund, (width, width))
         self.spielfeld.blit(self.hintergrund, (0, 0))
 
         #  Spielerbilder laden
@@ -191,6 +204,7 @@ class Animation:
         self.pos = []
         for i in range(spieleranzahl):
             self.spieler.append(pygame.image.load(spielerbilder[i]))
+            self.spieler[-1] = pygame.transform.scale(self.spieler[-1], (spieler, spieler))
             self.spielfeld.blit(self.spieler[-1], self.positionen[0])
             self.pos.append(self.positionen[0])
         pygame.display.flip()
@@ -207,6 +221,16 @@ class Animation:
             feld.blit(spieler[i], self.pos[i])
             i += 1
         pygame.display.flip()
+
+    def haeuser_anzeigen(self):
+        for i in Spielfeld.feld:
+            if i.typ != "anderes":
+                if i.haeuser > 0 and i.haueser < 6:
+                    pos = Spielfeld.feld.index(i)
+                    for haus in i.haeuser:
+                        self.spielfeld.blit()
+                        pos = self.positionen[pos]/i.haeuser
+
 
 
 class Spiel:
