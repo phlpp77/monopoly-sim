@@ -16,9 +16,16 @@ class SpielStarten:
             sp = self.gui.getStartPos()
             sk = self.gui.getStartKap()
             sa = self.gui.getSpielerAnzahl()
+            global sw
             sw = self.gui.getWdh()
             res = self.gui.getResolution()
             self.zeit = self.gui.getZeit()
+            global namenliste
+            namenliste = []
+            global geldliste
+            geldliste = []
+            global stundenliste
+            stundenliste = []
             # print(self.gui.getWdh())
             spieler = [i for i in range(sa)]
             # um das Spielfenster kleiner zu öffnen die übergebene Zahl zur Animation verringern
@@ -35,7 +42,8 @@ class SpielStarten:
                 self.auswertungsliste.append(self.schleife())
                 i += 1
 
-            print("Durchschnittlich wurde das Spiel mit", Auswertung.durchschnitt(self.auswertungsliste), "beendet.")
+            Auswertung()
+            #print("Durchschnittlich wurde das Spiel mit", Auswertung.durchschnitt(self.auswertungsliste), "beendet.")
 
     def schleife(self):
         spiel = self.spiel.spiel
@@ -59,15 +67,48 @@ class SpielStarten:
             # wenn nur noch 1 Spieler im Spiel ist wird die Schleife beendet
             if len(spiel) == 1:
                 gewinnerstehtnichtfest = False
-        print("Spieler", spiel[0].name, "gewinnt mit", spiel[0].geld)
+
+        namenliste.append(spiel[0].name)
+        geldliste.append(spiel[0].geld)
+        stundenliste.append(round(spiel[0].get_spielzeit("h"), 2))
         geld = spiel[0].geld
         self.spiel.spielerzurücksetzen(spiel[0].name)
-        print("Das Spiel hätte", round(spiel[0].get_spielzeit("h"), 2), "Stunden gebraucht")
         del spiel[0]
         return geld
 
 
 class Auswertung:
+    def __init__(self):
+        # Fenster erstellen
+        self.root = Tk()
+        self.auswertungsfenster = Frame(self.root)
+        self.auswertungsfenster.pack()
+        self.root.lift()
+        self.root.attributes("-topmost", True)
+        self.root.focus_force()
+        self.root.title("Monopoly Simulation - Auswertung")
+
+        # Fenster mittig zentrieren
+        w = 600
+        h = 300
+        ws = self.root.winfo_screenwidth()
+        hs = self.root.winfo_screenheight()
+        global x
+        x = (ws / 2) - (w / 2)
+        global y
+        y = (hs / 2) - (h / 2)
+        self.root.geometry("%dx%d+%d+%d" % (w, h, x, y))
+        self.root.config(bg='lightgrey')
+        if platform() == 'Darwin':
+            system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+
+        Label(self.auswertungsfenster, text=("Auswertung", "der", sw, "Spiele")).grid(row=0, columnspan=2)
+        for i in range(1, sw+1):
+            Label(self.auswertungsfenster, text=("Das", i, ".", "Spiel", "wurde", "durch", "Spieler", namenliste[i-1], "mit", geldliste[i-1], "Euro", "gewonnen")).grid(row=i, column=2, columnspan=2)
+            Label(self.auswertungsfenster, text=("Das", i, ".", "Spiel", "hätte", stundenliste[i-1])).grid(row=i, column=3, columnspan=2)
+            print(i)
+        self.root.mainloop()
+
     # Methode um aus einem Array den Durchschnittswert zu bilden
     @staticmethod
     def durchschnitt(liste):

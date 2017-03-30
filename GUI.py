@@ -206,10 +206,10 @@ class Animation:
 
         # Initialisieren vom Fenster
         os.environ['SDL_VIDEO_CENTERED'] = '1'
-        #os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y-150)
 
         pygame.init()
         self.spielfeld = pygame.display.set_mode((width, width))
+        pygame.display.set_caption("Monopoly Simulation")
         # Hintergrund anzeigen
         self.hintergrund = pygame.image.load("gfx/spielfeld.png")
         self.hintergrund = pygame.transform.scale(self.hintergrund, (width, width))
