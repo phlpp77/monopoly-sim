@@ -59,7 +59,7 @@ class GUI:
         sp.grid(row=2, column=1)
         wdh.grid(row=3, column=1)
         # Standartmäßiger Inputfeldtext
-        sk.insert(END, "1500")
+        sk.insert(END, "100")
         sp.insert(END, "0")
         wdh.insert(END, "2")
 
@@ -82,7 +82,7 @@ class GUI:
         global zeit
         zeit = Scale(self.hauptfenster, from_=1.5, to_=0, orient=HORIZONTAL, resolution=0.1)
         zeit.grid(row=6, column=1)
-        zeit.set(0.7)
+        zeit.set(0.0)
 
 
         # Start / Überprüfung der Werte

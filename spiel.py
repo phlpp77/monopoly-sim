@@ -79,6 +79,8 @@ class SpielStarten:
 
 class Auswertung:
     def __init__(self):
+        # PyGame schließen
+        pygame.quit()
         # Fenster erstellen
         self.root = Tk()
         self.auswertungsfenster = Frame(self.root)
@@ -89,8 +91,8 @@ class Auswertung:
         self.root.title("Monopoly Simulation - Auswertung")
 
         # Fenster mittig zentrieren
-        w = 600
-        h = 300
+        w = 700
+        h = 75+(sw-1)*25
         ws = self.root.winfo_screenwidth()
         hs = self.root.winfo_screenheight()
         global x
@@ -102,12 +104,23 @@ class Auswertung:
         if platform() == 'Darwin':
             system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
-        Label(self.auswertungsfenster, text=("Auswertung", "der", sw, "Spiele")).grid(row=0, columnspan=2)
+        Label(self.auswertungsfenster, text=("Auswertung", "der", sw, "simulierten", "Spiele:"), font="Verdana 14 bold").grid(row=0, columnspan=2)
+
         for i in range(1, sw+1):
-            Label(self.auswertungsfenster, text=("Das", i, ".", "Spiel", "wurde", "durch", "Spieler", namenliste[i-1], "mit", geldliste[i-1], "Euro", "gewonnen")).grid(row=i, column=2, columnspan=2)
-            Label(self.auswertungsfenster, text=("Das", i, ".", "Spiel", "hätte", stundenliste[i-1])).grid(row=i, column=3, columnspan=2)
-            print(i)
+            Label(self.auswertungsfenster, text=("-", "Das", str(i)+".", "Spiel", "wurde", "durch", "Spieler", namenliste[i-1], "mit", geldliste[i-1], "Euro", "gewonnen.")).grid(row=i, column=0, columnspan=3)
+            Label(self.auswertungsfenster, text=("Es", "hätte", stundenliste[i-1], "Stunden", "in", "der", "Wirklichkeit", "gedauert.")).grid(row=i, column=3, columnspan=3)
+
+        Button(self.auswertungsfenster, text="Beenden", command=self.root.destroy, bg="red").grid(row=sw+2)
+        Button(self.auswertungsfenster, text="Erneut Starten", command=self.neustart, bg="green").grid(row=sw+2, column=1)
+        self.root.bind('<KeyPress-Return>', self.enter_destroy)
         self.root.mainloop()
+
+    def enter_destroy(self, x):
+        self.root.destroy()
+
+    def neustart(self):
+        self.root.destroy()
+        SpielStarten()
 
     # Methode um aus einem Array den Durchschnittswert zu bilden
     @staticmethod
