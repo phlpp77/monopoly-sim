@@ -183,7 +183,7 @@ class GUI:
 
 
 class Animation:
-    def __init__(self, spieleranzahl, prozent):
+    def __init__(self, spieleranzahl, prozent, startzeit):
         # Variablen definieren
         spielerbilder = ["gfx/figur0.png", "gfx/figur1.png", "gfx/figur2.png", "gfx/figur3.png", "gfx/figur4.png",
                          "gfx/figur5.png"]
@@ -193,16 +193,18 @@ class Animation:
         width = int(width * prozent)
         steps = width / 11
         self.positionen = []
-        spieler = int(50 * prozent)
+        self.spieler_größe = int(50 * prozent)
+        self.zeit = startzeit
+        versch = int(0.5 * self.spieler_größe)
 
         for i in reversed(range(11)):
-            self.positionen.append((int(steps / 2 + i * steps), int(10.5 * steps)))
+            self.positionen.append((int((steps / 2 + i * steps)-versch), int((10.5 * steps)-versch)))
         for i in reversed(range(10)):
-            self.positionen.append((int(steps / 2), int(steps / 2 + i * steps)))
+            self.positionen.append((int((steps / 2)-versch), int((steps / 2 + i * steps)-versch)))
         for i in range(1, 10):
-            self.positionen.append((int(steps / 2 + i * steps), int(0.5 * steps)))
+            self.positionen.append((int((steps / 2 + i * steps)-versch), int((0.5 * steps)-versch)))
         for i in range(10):
-            self.positionen.append((int(10.5 * steps), int(steps / 2 + i * steps)))
+            self.positionen.append((int((10.5 * steps)-versch), int((steps / 2 + i * steps)-versch)))
 
         # Initialisieren vom Fenster
         os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -220,15 +222,39 @@ class Animation:
         self.pos = []
         for i in range(spieleranzahl):
             self.spieler.append(pygame.image.load(spielerbilder[i]))
-            self.spieler[-1] = pygame.transform.scale(self.spieler[-1], (spieler, spieler))
+            rect = self.spieler[i].get_rect()
+            #print(rect.center)
+            #print(rect.centery)
+            #print(rect.x)
+            #print(rect.y)
+            rect.x = 25
+            rect.y = 25
+            rect.move(50, 50)
+            #print(rect.x)
+            rect.centerx = 15
+            rect.centery = 15
+            self.spieler[-1] = pygame.transform.scale(self.spieler[-1], (self.spieler_größe, self.spieler_größe))
             self.spielfeld.blit(self.spieler[-1], self.positionen[0])
             self.pos.append(self.positionen[0])
         pygame.display.flip()
+
+    def loading_spielerbilder(self):
+        pass
 
     def pos_aendern(self, figur, endpos):
         feld = self.spielfeld
         spieler = self.spieler
         self.pos[figur] = self.positionen[endpos]
+
+        # Geschwindigkeitsaenderung registrieren
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+                self.zeit += 0.1
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                self.zeit -= 0.1
+                if self.zeit <= 0:
+                    self.zeit = 0
 
         # Hintergrund wird hervorgeholt um die Spielfiguren zu verdecken
         feld.blit(self.hintergrund, (0, 0))
@@ -246,6 +272,12 @@ class Animation:
                     for haus in i.haeuser:
                         self.spielfeld.blit()
                         pos = self.positionen[pos]/i.haeuser
+
+    def spielerentfernen(self, name):
+        del self.spieler[name]
+
+    def stop(self):
+        pygame.quit()
 
 
 

@@ -15,10 +15,10 @@ class SpielStarten:
         if startbar is True:
             sp = self.gui.getStartPos()
             sk = self.gui.getStartKap()
-            sa = self.gui.getSpielerAnzahl()
+            self.sa = self.gui.getSpielerAnzahl()
             global sw
             sw = self.gui.getWdh()
-            res = self.gui.getResolution()
+            self.res = self.gui.getResolution()
             self.zeit = self.gui.getZeit()
             global namenliste
             namenliste = []
@@ -27,9 +27,8 @@ class SpielStarten:
             global stundenliste
             stundenliste = []
             # print(self.gui.getWdh())
-            spieler = [i for i in range(sa)]
+            spieler = [i for i in range(self.sa)]
             # um das Spielfenster kleiner zu öffnen die übergebene Zahl zur Animation verringern
-            self.animation = Animation(sa, res)
             self.spiel = Spiel(spieler, sk, sp)
             # self.animation.figuren_erstellen(sa)
 
@@ -40,6 +39,7 @@ class SpielStarten:
             while i <= sw:
                 self.spiel.__init__(spieler, sk, sp)
                 self.auswertungsliste.append(self.schleife())
+                print("Spiel", i, "beendet.")
                 i += 1
 
             Auswertung()
@@ -47,6 +47,7 @@ class SpielStarten:
 
     def schleife(self):
         spiel = self.spiel.spiel
+        self.animation = Animation(self.sa, self.res, self.zeit)
         gewinnerstehtnichtfest = True
         # Spielschleife wird ausgeführt solange mehr als ein Spieler noch drin ist
         while gewinnerstehtnichtfest:
@@ -54,7 +55,7 @@ class SpielStarten:
             for i in spiel:
                 # Wenn Spieler nicht im Gefängnis ist wird gewürfelt
                 i.im_gefaengnis is False and i.wuerfeln()
-                sleep(self.zeit)
+                sleep(self.animation.zeit)
                 self.animation.pos_aendern(spiel.index(i), i.pos)
                 # print("hat gewürfelt")
                 # self.animation.spielfeldpos_aendern(spiel.index(i), i.get_pos())
@@ -63,6 +64,7 @@ class SpielStarten:
                 if i.geld < 1:
                     # print(i.name, "ist aus dem Spiel")
                     self.spiel.spielerzurücksetzen(i.name)
+                    self.animation.spielerentfernen(spiel.index(i))
                     del spiel[spiel.index(i)]
             # wenn nur noch 1 Spieler im Spiel ist wird die Schleife beendet
             if len(spiel) == 1:
@@ -73,6 +75,7 @@ class SpielStarten:
         stundenliste.append(round(spiel[0].get_spielzeit("h"), 2))
         geld = spiel[0].geld
         self.spiel.spielerzurücksetzen(spiel[0].name)
+        self.animation.stop()
         del spiel[0]
         return geld
 
