@@ -57,12 +57,10 @@ class SpielStarten:
                 i.im_gefaengnis is False and i.wuerfeln()
                 sleep(self.animation.zeit)
                 self.animation.pos_aendern(spiel.index(i), i.pos)
-                # print("hat gewürfelt")
-                # self.animation.spielfeldpos_aendern(spiel.index(i), i.get_pos())
                 i.feldchecken(self.spiel.spiel)
                 # wenn Spieler unter 1 Euro hat wird er aus dem Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:
-                    # print(i.name, "ist aus dem Spiel")
+                    print(i.name, "ist aus dem Spiel")
                     self.spiel.spielerzurücksetzen(i.name)
                     self.animation.spielerentfernen(spiel.index(i))
                     del spiel[spiel.index(i)]
@@ -94,8 +92,8 @@ class Auswertung:
         self.root.title("Monopoly Simulation - Auswertung")
 
         # Fenster mittig zentrieren
-        w = 700
-        h = 75+(sw-1)*25
+        w = 800
+        h = 75+sw*25
         ws = self.root.winfo_screenwidth()
         hs = self.root.winfo_screenheight()
         global x
@@ -108,13 +106,19 @@ class Auswertung:
             system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
         Label(self.auswertungsfenster, text=("Auswertung", "der", sw, "simulierten", "Spiele:"), font="Verdana 14 bold").grid(row=0, columnspan=2)
-
+        zeit = self.zeiten(self.durchschnitt_zeit(stundenliste))
         for i in range(1, sw+1):
             Label(self.auswertungsfenster, text=("-", "Das", str(i)+".", "Spiel", "wurde", "durch", "Spieler", namenliste[i-1], "mit", geldliste[i-1], "Euro", "gewonnen.")).grid(row=i, column=0, columnspan=3)
             Label(self.auswertungsfenster, text=("Es", "hätte", stundenliste[i-1], "Stunden", "in", "der", "Wirklichkeit", "gedauert.")).grid(row=i, column=3, columnspan=3)
 
-        Button(self.auswertungsfenster, text="Beenden", command=self.root.destroy, bg="red").grid(row=sw+2)
-        Button(self.auswertungsfenster, text="Erneut Starten", command=self.neustart, bg="green").grid(row=sw+2, column=1)
+        for i in range(1, sw+1):
+            Label(self.auswertungsfenster, text=("-", "Das", str(i)+".", "Spiel", "wurde", "durch", "Spieler", namenliste[i-1], "mit", geldliste[i-1], "Euro", "gewonnen.")).grid(row=i, column=0, columnspan=3)
+            Label(self.auswertungsfenster, text=("Es", "hätte", "durchschnittlich", zeit[0], "Stunden", "und", zeit[1], "Minuten", "gedauert.")).grid(row=i, column=3, columnspan=3)
+
+        Label(self.auswertungsfenster, text=("Durchschnittlich", "wurden", "die", "Spiele", "mit", self.durchschnitt(geldliste), "Euro", "gewonnen.")).grid(row=sw+2, column=0, columnspan=3)
+        Label(self.auswertungsfenster, text=("Sie", "hätten", "durchschnittlich", zeit[0], "Stunden", "und", zeit[1], "Minuten", "gedauert.")).grid(row=sw+2, column=3, columnspan=3)
+        Button(self.auswertungsfenster, text="Beenden", command=self.root.destroy, bg="red").grid(row=sw+3)
+        Button(self.auswertungsfenster, text="Erneut Starten", command=self.neustart, bg="green").grid(row=sw+3, column=1)
         self.root.bind('<KeyPress-Return>', self.enter_destroy)
         self.root.mainloop()
 
@@ -130,11 +134,20 @@ class Auswertung:
     def durchschnitt(liste):
         return liste[0] if len(liste) == 1 else int(sum(liste) / len(liste))
 
+    @staticmethod
+    def durchschnitt_zeit(liste):
+        return  liste[0] if len(liste) == 1 else "{0:.2f}".format(sum(liste) / len(liste))
+
     # Methode um aus einem Array den Median zu bilden
     @staticmethod
     def median(liste):
         mitte = (len(liste) - 1) / 2
         return liste[int(mitte)] if mitte.is_integer() else int((liste[int(mitte)] + liste[int(mitte + 1)]) / 2)
+
+    @staticmethod
+    def zeiten(zeit):
+        stunden, minuten = divmod(float(zeit), 1)
+        return (int(stunden), int(60*minuten))
 
 
 SpielStarten()

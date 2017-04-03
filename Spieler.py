@@ -54,11 +54,11 @@ class Spieler:
                     if position.haeuser < 5:
                         self.bauentscheidung()
 
-            # feld gehoert dem Spieler aber ist nicht bebaubar, also wird nichts unternommen
+            # Feld gehoert dem Spieler aber ist nicht bebaubar, also wird nichts unternommen
             elif besitzer == self.name:
                 pass
 
-            # feld gehoert anderem Spieler
+            # Feld gehoert anderem Spieler
             else:
                 # nachgucken welchem Spieler das feld gehoert
                 for i in self.spiel:
@@ -69,7 +69,6 @@ class Spieler:
                         # Argumente für die Mieten() Methode braucht
                         if position.kartentyp == "Werk":
                             miete = position.mieten_abrufen(self.wurf, i.anzahl_in_besitz)
-                            # print("Werk", Spieler[i])
 
                         elif position.kartentyp == "Bahnhof":
                             miete = position.mieten_abrufen(i.anzahl_in_besitz[0])

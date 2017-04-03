@@ -41,14 +41,14 @@ class GUI:
 
         # Einleitung
         label = Label(self.hauptfenster,
-                      text="Bitte die Simulation von Monopoly konfigurieren, bevor diese gestartet wird.")
+                      text="Dies ist eine Monopoly-Simulation. Hier können die Parameter geändert werden.")
         label.grid(row=0, columnspan=2)
 
         # Konfiguration
         # Inputfelder für startkapital, startposition und Anzahl der wiederholungen
         Label(self.hauptfenster, text="Startkapital").grid(row=1)
         Label(self.hauptfenster, text="Startposition").grid(row=2)
-        Label(self.hauptfenster, text="Anzahl Wdh").grid(row=3)
+        Label(self.hauptfenster, text="Anzahl simulierter Spiele").grid(row=3)
         global sk
         sk = Entry(self.hauptfenster)
         global sp
@@ -64,21 +64,21 @@ class GUI:
         wdh.insert(END, "2")
 
         # Schieberegler fuer Anzahl der Spieler (2-6)
-        Label(self.hauptfenster, text="Spieleranzahl").grid(row=4)
+        Label(self.hauptfenster, text="Anzahl der Spieler").grid(row=4)
         global sa
         sa = Scale(self.hauptfenster, from_=2, to=6, orient=HORIZONTAL)
         sa.grid(row=4, column=1)
         sa.set(4)
 
         # Schieberegler für die Skalierung der Spielfeldanzeige
-        Label(self.hauptfenster, text="Skalierung Anzeige in %").grid(row=5)
+        Label(self.hauptfenster, text="Anzeigenskalierung in %").grid(row=5)
         global res
         res = Scale(self.hauptfenster, from_=1, to_=100, orient=HORIZONTAL)
         res.grid(row=5, column=1)
         res.set(50)
 
         # Schieberegler für die Geschwindigkeit
-        Label(self.hauptfenster, text="Geschwindigkeit Anzeige").grid(row=6)
+        Label(self.hauptfenster, text="Anzeigengeschwindigkeit").grid(row=6)
         global zeit
         zeit = Scale(self.hauptfenster, from_=1.5, to_=0, orient=HORIZONTAL, resolution=0.1)
         zeit.grid(row=6, column=1)
@@ -172,24 +172,16 @@ class GUI:
     def getZeit(self):
         return self.zeit
 
-    def auswertungstext(self, durchschnitt):
-        endtext = (
-            "Gewinner haben durchschnittlich", round(durchschnitt, 2), "Euro, in einem Spiel mit",
-            self.wdh, "Runden und einem Startkapital von", self.sk, "Euro bekommen.\nDas Spiel wurde an Feldnummer",
-            self.sp, "gestartet.")
-        messagebox.showerror("ENDE", endtext)
-
-        # Label(self.hauptfenster, text=endtext).grid(row=6, column=1)
-
 
 class Animation:
     def __init__(self, spieleranzahl, prozent, startzeit):
+        pygame.init()
         # Variablen definieren
         spielerbilder = ["gfx/figur0.png", "gfx/figur1.png", "gfx/figur2.png", "gfx/figur3.png", "gfx/figur4.png",
                          "gfx/figur5.png"]
         # um das Spielfeld variabel skalieren zu können wird die self.positionen Liste in jedem Durchgang neu erstellt
         prozent /= 100
-        width = 1100
+        width = pygame.display.Info().current_h - 50
         width = int(width * prozent)
         steps = width / 11
         self.positionen = []
@@ -209,9 +201,8 @@ class Animation:
         # Initialisieren vom Fenster
         os.environ['SDL_VIDEO_CENTERED'] = '1'
 
-        pygame.init()
         self.spielfeld = pygame.display.set_mode((width, width))
-        pygame.display.set_caption("Monopoly Simulation")
+        pygame.display.set_caption("Monopoly-Simulation")
         # Hintergrund anzeigen
         self.hintergrund = pygame.image.load("gfx/spielfeld.png")
         self.hintergrund = pygame.transform.scale(self.hintergrund, (width, width))
@@ -223,14 +214,9 @@ class Animation:
         for i in range(spieleranzahl):
             self.spieler.append(pygame.image.load(spielerbilder[i]))
             rect = self.spieler[i].get_rect()
-            #print(rect.center)
-            #print(rect.centery)
-            #print(rect.x)
-            #print(rect.y)
             rect.x = 25
             rect.y = 25
             rect.move(50, 50)
-            #print(rect.x)
             rect.centerx = 15
             rect.centery = 15
             self.spieler[-1] = pygame.transform.scale(self.spieler[-1], (self.spieler_größe, self.spieler_größe))
