@@ -10,40 +10,26 @@ class SpielStarten:
         self.gui = GUI()
         self.gui.erstellen()
         startbar = self.gui.startbar()
-        # self.animation = Animation()
 
         if startbar is True:
-            sp = self.gui.getStartPos()
-            sk = self.gui.getStartKap()
-            self.sa = self.gui.getSpielerAnzahl()
-            global sw
-            sw = self.gui.getWdh()
-            self.res = self.gui.getResolution()
-            self.zeit = self.gui.getZeit()
-            global namenliste
-            namenliste = []
-            global geldliste
-            geldliste = []
-            global stundenliste
-            stundenliste = []
-            # print(self.gui.getWdh())
+            # Variablen definieren
+            g = self.gui
+            sp, sk, buyrng = g.get_start_pos(), g.get_start_kap(), g.get_buyrng()
+            self.sa, self.sw, self.res, self.zeit = g.get_anzahl(), g.get_wdh(), g.get_resolution(), g.get_zeit()
+            self.namenliste, self.geldliste, self.stundenliste = [], [], []
             spieler = [i for i in range(self.sa)]
             # um das Spielfenster kleiner zu öffnen die übergebene Zahl zur Animation verringern
-            self.spiel = Spiel(spieler, sk, sp)
-            # self.animation.figuren_erstellen(sa)
-
-            # self.animation.setDaemon(True)
-            # self.animation.run()
+            self.buyrng = True
+            self.spiel = Spiel(spieler, sk, sp, buyrng)
 
             i = 1
-            while i <= sw:
-                self.spiel.__init__(spieler, sk, sp)
+            while i <= self.sw:
+                self.spiel.__init__(spieler, sk, sp, buyrng)
                 self.auswertungsliste.append(self.schleife())
                 print("Spiel", i, "beendet.")
                 i += 1
 
-            Auswertung()
-            #print("Durchschnittlich wurde das Spiel mit", Auswertung.durchschnitt(self.auswertungsliste), "beendet.")
+            Auswertung(self.sw, self.geldliste, self.stundenliste, self.namenliste)
 
     def schleife(self):
         spiel = self.spiel.spiel
@@ -60,7 +46,7 @@ class SpielStarten:
                 i.feldchecken(self.spiel.spiel)
                 # wenn Spieler unter 1 Euro hat wird er aus dem Spiel entfernt und seine Strassen wieder kaufbar gemacht
                 if i.geld < 1:
-                    print(i.name, "ist aus dem Spiel")
+                    # print(i.name, "ist aus dem Spiel")
                     self.spiel.spielerzurücksetzen(i.name)
                     self.animation.spielerentfernen(spiel.index(i))
                     del spiel[spiel.index(i)]
@@ -68,9 +54,9 @@ class SpielStarten:
             if len(spiel) == 1:
                 gewinnerstehtnichtfest = False
 
-        namenliste.append(spiel[0].name)
-        geldliste.append(spiel[0].geld)
-        stundenliste.append(round(spiel[0].get_spielzeit("h"), 2))
+        self.namenliste.append(spiel[0].name)
+        self.geldliste.append(spiel[0].geld)
+        self.stundenliste.append(round(spiel[0].get_spielzeit("h"), 2))
         geld = spiel[0].geld
         self.spiel.spielerzurücksetzen(spiel[0].name)
         self.animation.stop()
@@ -79,7 +65,9 @@ class SpielStarten:
 
 
 class Auswertung:
-    def __init__(self):
+    def __init__(self, sw, geldliste, stundenliste, namenliste):
+        # Variablen definieren
+        self.sw, self.geldliste, self.stundenliste, self.namenliste = sw, geldliste, stundenliste, namenliste
         # PyGame schließen
         pygame.quit()
         # Fenster erstellen
@@ -93,37 +81,49 @@ class Auswertung:
 
         # Fenster mittig zentrieren
         w = 800
-        h = 75+sw*25
+        h = 75 + self.sw * 25
         ws = self.root.winfo_screenwidth()
         hs = self.root.winfo_screenheight()
-        global x
         x = (ws / 2) - (w / 2)
-        global y
         y = (hs / 2) - (h / 2)
         self.root.geometry("%dx%d+%d+%d" % (w, h, x, y))
         self.root.config(bg='lightgrey')
         if platform() == 'Darwin':
             system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
-        Label(self.auswertungsfenster, text=("Auswertung", "der", sw, "simulierten", "Spiele:"), font="Verdana 14 bold").grid(row=0, columnspan=2)
-        zeit = self.zeiten(self.durchschnitt_zeit(stundenliste))
-        for i in range(1, sw+1):
-            Label(self.auswertungsfenster, text=("-", "Das", str(i)+".", "Spiel", "wurde", "durch", "Spieler", namenliste[i-1], "mit", geldliste[i-1], "Euro", "gewonnen.")).grid(row=i, column=0, columnspan=3)
-            Label(self.auswertungsfenster, text=("Es", "hätte", stundenliste[i-1], "Stunden", "in", "der", "Wirklichkeit", "gedauert.")).grid(row=i, column=3, columnspan=3)
+        Label(self.auswertungsfenster, text=("Auswertung", "der", self.sw, "simulierten", "Spiele:"),
+              font="Verdana 14 bold").grid(row=0, columnspan=2)
+        zeit = self.zeiten(self.durchschnitt_zeit(self.stundenliste))
+        # Einzelwerte der simulierten Spiele anzeigen
+        for i in range(1, sw + 1):
+            zeiten = self.zeiten(self.stundenliste[i - 1])
+            Label(self.auswertungsfenster, text=(
+                "-", "Das", str(i) + ".", "Spiel", "wurde", "durch", "Spieler", self.namenliste[i - 1], "mit",
+                self.geldliste[i - 1], "Euro", "gewonnen.")).grid(row=i, column=0, columnspan=3)
+            Label(self.auswertungsfenster, text=(
+                "Es", "hätte", zeiten[0], "Stunden", "und", zeiten[1], "Minuten" "in", "der", "Wirklichkeit",
+                "gedauert.")).grid(row=i, column=3, columnspan=3)
 
-        for i in range(1, sw+1):
-            Label(self.auswertungsfenster, text=("-", "Das", str(i)+".", "Spiel", "wurde", "durch", "Spieler", namenliste[i-1], "mit", geldliste[i-1], "Euro", "gewonnen.")).grid(row=i, column=0, columnspan=3)
-            Label(self.auswertungsfenster, text=("Es", "hätte", "durchschnittlich", zeit[0], "Stunden", "und", zeit[1], "Minuten", "gedauert.")).grid(row=i, column=3, columnspan=3)
-
-        Label(self.auswertungsfenster, text=("Durchschnittlich", "wurden", "die", "Spiele", "mit", self.durchschnitt(geldliste), "Euro", "gewonnen.")).grid(row=sw+2, column=0, columnspan=3)
-        Label(self.auswertungsfenster, text=("Sie", "hätten", "durchschnittlich", zeit[0], "Stunden", "und", zeit[1], "Minuten", "gedauert.")).grid(row=sw+2, column=3, columnspan=3)
-        Button(self.auswertungsfenster, text="Beenden", command=self.root.destroy, bg="red").grid(row=sw+3)
-        Button(self.auswertungsfenster, text="Erneut Starten", command=self.neustart, bg="green").grid(row=sw+3, column=1)
-        self.root.bind('<KeyPress-Return>', self.enter_destroy)
+        # Durchschnittswerte anzeigen
+        Label(self.auswertungsfenster, text=(
+            "Durchschnittlich", "wurden", "die", "Spiele", "mit", self.durchschnitt(self.geldliste), "Euro",
+            "gewonnen.")).grid(row=self.sw + 2, column=0, columnspan=3)
+        Label(self.auswertungsfenster, text=(
+            "Sie", "hätten", "durchschnittlich", zeit[0], "Stunden", "und", zeit[1], "Minuten", "gedauert.")).grid(
+            row=self.sw + 2, column=3, columnspan=3)
+        # Buttons
+        Button(self.auswertungsfenster, text="Beenden", command=self.root.destroy, bg="red").grid(row=self.sw + 3)
+        Button(self.auswertungsfenster, text="Erneut Starten", command=self.neustart, bg="green").grid(row=self.sw + 3,
+                                                                                                       column=1)
+        self.root.bind('<KeyPress-Return>', self.neustart_enter)
+        self.root.bind("<Escape>", self.enter_destroy)
         self.root.mainloop()
 
     def enter_destroy(self, x):
         self.root.destroy()
+
+    def neustart_enter(self, x):
+        self.neustart()
 
     def neustart(self):
         self.root.destroy()
@@ -136,7 +136,7 @@ class Auswertung:
 
     @staticmethod
     def durchschnitt_zeit(liste):
-        return  liste[0] if len(liste) == 1 else "{0:.2f}".format(sum(liste) / len(liste))
+        return liste[0] if len(liste) == 1 else "{0:.2f}".format(sum(liste) / len(liste))
 
     # Methode um aus einem Array den Median zu bilden
     @staticmethod
@@ -147,7 +147,7 @@ class Auswertung:
     @staticmethod
     def zeiten(zeit):
         stunden, minuten = divmod(float(zeit), 1)
-        return (int(stunden), int(60*minuten))
+        return (int(stunden), int(60 * minuten))
 
 
 SpielStarten()

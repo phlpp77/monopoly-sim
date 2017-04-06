@@ -10,7 +10,6 @@ from platform import system as platform
 import os
 
 
-
 class GUI:
     # Definition von den Spielern und anderen Variablen
     def __init__(self):
@@ -30,9 +29,7 @@ class GUI:
         h = 300
         ws = self.root.winfo_screenwidth()
         hs = self.root.winfo_screenheight()
-        global x
         x = (ws / 2) - (w / 2)
-        global y
         y = (hs / 2) - (h / 2)
         self.root.geometry("%dx%d+%d+%d" % (w, h, x, y))
         self.root.config(bg='lightgrey')
@@ -49,47 +46,54 @@ class GUI:
         Label(self.hauptfenster, text="Startkapital").grid(row=1)
         Label(self.hauptfenster, text="Startposition").grid(row=2)
         Label(self.hauptfenster, text="Anzahl simulierter Spiele").grid(row=3)
-        global sk
-        sk = Entry(self.hauptfenster)
-        global sp
-        sp = Entry(self.hauptfenster)
-        global wdh
-        wdh = Entry(self.hauptfenster)
-        sk.grid(row=1, column=1)
-        sp.grid(row=2, column=1)
-        wdh.grid(row=3, column=1)
+        self.sk = Entry(self.hauptfenster)
+        self.sp = Entry(self.hauptfenster)
+        self.wdh = Entry(self.hauptfenster)
+        self.sk.grid(row=1, column=1)
+        self.sp.grid(row=2, column=1)
+        self.wdh.grid(row=3, column=1)
         # Standartmäßiger Inputfeldtext
-        sk.insert(END, "100")
-        sp.insert(END, "0")
-        wdh.insert(END, "2")
+        self.sk.insert(END, "500")
+        self.sp.insert(END, "0")
+        self.wdh.insert(END, "2")
 
         # Schieberegler fuer Anzahl der Spieler (2-6)
         Label(self.hauptfenster, text="Anzahl der Spieler").grid(row=4)
-        global sa
-        sa = Scale(self.hauptfenster, from_=2, to=6, orient=HORIZONTAL)
-        sa.grid(row=4, column=1)
-        sa.set(4)
+        self.sa = Scale(self.hauptfenster, from_=2, to=6, orient=HORIZONTAL)
+        self.sa.grid(row=4, column=1)
+        self.sa.set(4)
 
         # Schieberegler für die Skalierung der Spielfeldanzeige
         Label(self.hauptfenster, text="Anzeigenskalierung in %").grid(row=5)
-        global res
-        res = Scale(self.hauptfenster, from_=1, to_=100, orient=HORIZONTAL)
-        res.grid(row=5, column=1)
-        res.set(50)
+        self.res = Scale(self.hauptfenster, from_=1, to_=100, orient=HORIZONTAL)
+        self.res.grid(row=5, column=1)
+        self.res.set(50)
 
         # Schieberegler für die Geschwindigkeit
         Label(self.hauptfenster, text="Anzeigengeschwindigkeit").grid(row=6)
-        global zeit
-        zeit = Scale(self.hauptfenster, from_=1.5, to_=0, orient=HORIZONTAL, resolution=0.1)
-        zeit.grid(row=6, column=1)
-        zeit.set(0.0)
+        self.zeit = Scale(self.hauptfenster, from_=1.5, to_=0, orient=HORIZONTAL, resolution=0.1)
+        self.zeit.grid(row=6, column=1)
+        self.zeit.set(0.0)
 
+        # Schieberegler für die Geschwindigkeit
+        self.buyrng = BooleanVar()
+        Label(self.hauptfenster, text="Kaufentscheidung").grid(row=7)
+        Radiobutton(self.hauptfenster,
+                    text="zufällig",
+                    padx=20,
+                    variable=self.buyrng,
+                    value=True).grid(row=7, column=1)
+        Radiobutton(self.hauptfenster,
+                    text="Immer kaufen",
+                    padx=20,
+                    variable=self.buyrng,
+                    value=False).grid(row=7, column=2)
 
         # Start / Überprüfung der Werte
-        start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, fg="white",
-                       bg="black")
+        start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, bg="green")
         start.grid(row=7, columnspan=2)
         self.root.bind('<KeyPress-Return>', self.enter_starten)
+        self.root.bind("<Escape>", self.esc)
         self.root.mainloop()
 
     # TK legt beim Keypress noch metadaten bei, die zu TypeErrors führen, deshab werden sie hier fallen gelassen
@@ -99,7 +103,7 @@ class GUI:
     def starten(self):
         # Prüfung des Startkapitals
         startbar = 0
-        self.sk = sk.get()
+        self.sk = self.sk.get()
         if self.sk == "":
             messagebox.showerror("FAIL", "Wähle bitte ein Startkapital!")
         else:
@@ -114,7 +118,7 @@ class GUI:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Startkapital)!")
 
         # Prüfung der Startposition
-        self.sp = sp.get()
+        self.sp = self.sp.get()
         if self.sp == "":
             messagebox.showerror("FAIL", "Wähle bitte ein Startposition!")
         else:
@@ -129,7 +133,7 @@ class GUI:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Startposition)!")
 
         # Prüfung der Wiederholungen
-        self.wdh = wdh.get()
+        self.wdh = self.wdh.get()
         if self.wdh == "":
             messagebox.showerror("FAIL", "Wähle bitte die Anzahl der Wiederholungen")
         else:
@@ -143,34 +147,41 @@ class GUI:
             except ValueError:
                 messagebox.showerror("FAIL", "Wähle bitte eine Zahl (Wiederholungen)!")
 
-        self.sa = sa.get()
-        self.res = res.get()
-        self.zeit = zeit.get()
+        self.sa = self.sa.get()
+        self.res = self.res.get()
+        self.zeit = self.zeit.get()
+        self.buyrng = self.buyrng.get()
 
         if startbar == 3:
             self.root.destroy()
             self.startbarabfrage = True
 
+    def esc(self, x):
+        self.root.destroy()
+
     def startbar(self):
         return self.startbarabfrage
 
-    def getStartPos(self):
+    def get_start_pos(self):
         return self.sp
 
-    def getStartKap(self):
+    def get_start_kap(self):
         return self.sk
 
-    def getWdh(self):
+    def get_wdh(self):
         return self.wdh
 
-    def getSpielerAnzahl(self):
+    def get_anzahl(self):
         return self.sa
 
-    def getResolution(self):
+    def get_resolution(self):
         return self.res
 
-    def getZeit(self):
+    def get_zeit(self):
         return self.zeit
+
+    def get_buyrng(self):
+        return self.buyrng
 
 
 class Animation:
@@ -190,13 +201,13 @@ class Animation:
         versch = int(0.5 * self.spieler_größe)
 
         for i in reversed(range(11)):
-            self.positionen.append((int((steps / 2 + i * steps)-versch), int((10.5 * steps)-versch)))
+            self.positionen.append((int((steps / 2 + i * steps) - versch), int((10.5 * steps) - versch)))
         for i in reversed(range(10)):
-            self.positionen.append((int((steps / 2)-versch), int((steps / 2 + i * steps)-versch)))
+            self.positionen.append((int((steps / 2) - versch), int((steps / 2 + i * steps) - versch)))
         for i in range(1, 10):
-            self.positionen.append((int((steps / 2 + i * steps)-versch), int((0.5 * steps)-versch)))
+            self.positionen.append((int((steps / 2 + i * steps) - versch), int((0.5 * steps) - versch)))
         for i in range(10):
-            self.positionen.append((int((10.5 * steps)-versch), int((steps / 2 + i * steps)-versch)))
+            self.positionen.append((int((10.5 * steps) - versch), int((steps / 2 + i * steps) - versch)))
 
         # Initialisieren vom Fenster
         os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -257,7 +268,7 @@ class Animation:
                     pos = Spielfeld.feld.index(i)
                     for haus in i.haeuser:
                         self.spielfeld.blit()
-                        pos = self.positionen[pos]/i.haeuser
+                        pos = self.positionen[pos] / i.haeuser
 
     def spielerentfernen(self, name):
         del self.spieler[name]
@@ -266,13 +277,12 @@ class Animation:
         pygame.quit()
 
 
-
 class Spiel:
-    def __init__(self, spieler, startgeld, startpos):
+    def __init__(self, spieler, startgeld, startpos, buyrng):
         self.spiel = []
         # alle Teilnehmer in eine Liste eintragen
         for i in spieler:
-            i = Spieler(i, startgeld, startpos)
+            i = Spieler(i, startgeld, startpos, buyrng)
             self.spiel.append(i)
 
     @staticmethod

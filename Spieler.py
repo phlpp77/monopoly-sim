@@ -4,18 +4,12 @@ from random import shuffle
 
 
 class Spieler:
-    def __init__(self, name, anfangsgeld, anfangs_pos):
+    def __init__(self, name, anfangsgeld, anfangs_pos, buyrng):
         global zeit
-        zeit = 0
-        self.geld = anfangsgeld
-        self.pos = anfangs_pos
-        self.name = name
-        self.wurf = 0
-        self.anzahl_in_besitz = [0] * 10
-        self.im_gefaengnis = False
-        self.gefaengnisfrei = 0
         global abgaben
-        abgaben = 0
+        zeit, abgaben = 0, 0
+        self.name, self.geld, self.pos, self.buyrng = name, anfangsgeld, anfangs_pos, buyrng
+        self.anzahl_in_besitz, self.wurf, self.gefaengnisfrei, self.im_gefaengnis = [0] * 10, 0, 0, False
 
     def get_pos(self):
         return self.pos
@@ -74,9 +68,7 @@ class Spieler:
                             miete = position.mieten_abrufen(i.anzahl_in_besitz[0])
 
                         else:
-                            miete = position.mieten_abrufen()
-                            farbe = position.farbe
-                            haeuser = position.haeuser
+                            miete, farbe, haeuser = position.mieten_abrufen(), position.farbe, position.haeuser
                             if self.anzahl_in_besitz[farbe] == Spielfeld.feldhaeufigkeiten[farbe] and haeuser == 0:
                                 miete *= 2
 
@@ -172,17 +164,21 @@ class Spieler:
 
     def kaufentscheidung(self):
         global zeit
-        zeit += randint(30, 60)
-        position = Spielfeld.feld[self.pos]
-        if randint(1, 100) <= 50:
-            self.kaufen()
-
-        elif self.anzahl_in_besitz[position.farbe] == Spielfeld.feldhaeufigkeiten[position.farbe] - 1:
-            self.kaufen()
-        # wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
-        elif self.anzahl_in_besitz[position.farbe] == 1:
-            if randint(1, 100) <= 80:
+        if self.buyrng is True:
+            zeit += randint(30, 60)
+            position = Spielfeld.feld[self.pos]
+            if randint(1, 100) <= 50:
                 self.kaufen()
+
+            elif self.anzahl_in_besitz[position.farbe] == Spielfeld.feldhaeufigkeiten[position.farbe] - 1:
+                self.kaufen()
+        # wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
+            elif self.anzahl_in_besitz[position.farbe] == 1:
+                if randint(1, 100) <= 80:
+                    self.kaufen()
+        else:
+            zeit += randint(30, 60)
+            self.kaufen()
 
     def kaufen(self):
         global zeit
@@ -203,8 +199,7 @@ class Spieler:
     def wuerfeln(self):
         global zeit
         zeit += 10
-        wuerfel1 = randint(1, 6)
-        wuerfel2 = randint(1, 6)
+        wuerfel1, wuerfel2 = randint(1, 6), randint(1, 6)
         self.wurf = wuerfel1 + wuerfel2
         self.positionaendern(self.wurf)
         # Ueberpruefen ob es ein Pasch ist
@@ -219,8 +214,7 @@ class Spieler:
 
         # man hat pro Runde 3 Versuche um aus dem Gefaengnis zu kommen
         while i < 3 and self.im_gefaengnis is True:
-            wurf1 = randint(1, 6)
-            wurf2 = randint(1, 6)
+            wurf1, wurf2 = randint(1, 6), randint(1, 6)
             # man kommt nur frei wenn man einen Pasch wuerfelt
             if wurf1 == wurf2:
                 self.positionaendern(wurf1 + wurf2)
