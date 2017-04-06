@@ -172,7 +172,7 @@ class Spieler:
 
             elif self.anzahl_in_besitz[position.farbe] == Spielfeld.feldhaeufigkeiten[position.farbe] - 1:
                 self.kaufen()
-        # wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
+                # wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
             elif self.anzahl_in_besitz[position.farbe] == 1:
                 if randint(1, 100) <= 80:
                     self.kaufen()
@@ -252,11 +252,7 @@ class Spieler:
                     else:
                         self.geldaendern(100)
 
-    def get_spielzeit(self, einheit):
+    @staticmethod
+    def get_spielzeit():
         global zeit
-        if einheit == "s":
-            return zeit
-        elif einheit == "m":
-            return zeit/60
-        elif einheit == "h":
-            return zeit/3600
+        return zeit / 3600

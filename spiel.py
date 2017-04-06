@@ -56,7 +56,7 @@ class SpielStarten:
 
         self.namenliste.append(spiel[0].name)
         self.geldliste.append(spiel[0].geld)
-        self.stundenliste.append(round(spiel[0].get_spielzeit("h"), 2))
+        self.stundenliste.append(round(spiel[0].get_spielzeit(), 2))
         geld = spiel[0].geld
         self.spiel.spielerzurücksetzen(spiel[0].name)
         self.animation.stop()

@@ -273,7 +273,8 @@ class Animation:
     def spielerentfernen(self, name):
         del self.spieler[name]
 
-    def stop(self):
+    @staticmethod
+    def stop():
         pygame.quit()
 
 
