@@ -25,8 +25,8 @@ class GUI:
         self.root.focus_force()
         self.root.title("Monopoly Simulation")
         # Fenster mittig zentrieren
-        w = 500
-        h = 300
+        w = 550
+        h = 260
         ws = self.root.winfo_screenwidth()
         hs = self.root.winfo_screenheight()
         x = (ws / 2) - (w / 2)
@@ -53,7 +53,7 @@ class GUI:
         self.sp.grid(row=2, column=1)
         self.wdh.grid(row=3, column=1)
         # Standartmäßiger Inputfeldtext
-        self.sk.insert(END, "500")
+        self.sk.insert(END, "100")
         self.sp.insert(END, "0")
         self.wdh.insert(END, "2")
 
@@ -91,7 +91,7 @@ class GUI:
 
         # Start / Überprüfung der Werte
         start = Button(master=self.hauptfenster, text="Simulation starten", command=self.starten, bg="green")
-        start.grid(row=7, columnspan=2)
+        start.grid(row=8, columnspan=3)
         self.root.bind('<KeyPress-Return>', self.enter_starten)
         self.root.bind("<Escape>", self.esc)
         self.root.mainloop()

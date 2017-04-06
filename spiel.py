@@ -82,6 +82,8 @@ class Auswertung:
         # Fenster mittig zentrieren
         w = 800
         h = 75 + self.sw * 25
+        if sw > 30:
+            h = 100
         ws = self.root.winfo_screenwidth()
         hs = self.root.winfo_screenheight()
         x = (ws / 2) - (w / 2)
@@ -95,14 +97,28 @@ class Auswertung:
               font="Verdana 14 bold").grid(row=0, columnspan=2)
         zeit = self.zeiten(self.durchschnitt_zeit(self.stundenliste))
         # Einzelwerte der simulierten Spiele anzeigen
-        for i in range(1, sw + 1):
-            zeiten = self.zeiten(self.stundenliste[i - 1])
-            Label(self.auswertungsfenster, text=(
-                "-", "Das", str(i) + ".", "Spiel", "wurde", "durch", "Spieler", self.namenliste[i - 1], "mit",
-                self.geldliste[i - 1], "Euro", "gewonnen.")).grid(row=i, column=0, columnspan=3)
-            Label(self.auswertungsfenster, text=(
-                "Es", "hätte", zeiten[0], "Stunden", "und", zeiten[1], "Minuten" "in", "der", "Wirklichkeit",
-                "gedauert.")).grid(row=i, column=3, columnspan=3)
+        # um das Fenster klein zu halten werden nur maximal 30 Ergebnisse angezeigt
+        if sw < 30:
+            for i in range(1, sw + 1):
+                zeiten = self.zeiten(self.stundenliste[i - 1])
+                Label(self.auswertungsfenster, text=(
+                    "-", "Das", str(i) + ".", "Spiel", "wurde", "durch", "Spieler", self.namenliste[i - 1], "mit",
+                    self.geldliste[i - 1], "Euro", "gewonnen.")).grid(row=i, column=0, columnspan=3)
+                Label(self.auswertungsfenster, text=(
+                    "Es", "hätte", zeiten[0], "Stunden", "und", zeiten[1], "Minuten" "in", "der", "Wirklichkeit",
+                    "gedauert.")).grid(row=i, column=3, columnspan=3)
+        else:
+            # alle Werte als CSV ausgeben
+            file = open("Auswertung.csv", "w")
+            file.write("Geld; Stunden; Minuten")
+            file.write("\n")
+            for i in range(sw):
+                zeiten = self.zeiten(self.stundenliste[i])
+                text = str(self.geldliste[i]) + "; " + str(zeiten[0]) + "; " + str(zeiten[1])
+                file.write(text)
+                file.write("\n")
+            file.close()
+
 
         # Durchschnittswerte anzeigen
         Label(self.auswertungsfenster, text=(

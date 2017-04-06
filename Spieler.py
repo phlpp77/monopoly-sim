@@ -167,18 +167,20 @@ class Spieler:
         if self.buyrng is True:
             zeit += randint(30, 60)
             position = Spielfeld.feld[self.pos]
-            if randint(1, 100) <= 50:
-                self.kaufen()
-
-            elif self.anzahl_in_besitz[position.farbe] == Spielfeld.feldhaeufigkeiten[position.farbe] - 1:
-                self.kaufen()
-                # wenn man schon 1 Strasse besitzt ist die Wahrscheinlichkeit hoeher dass man Strassen gleicher Farbe kauft
-            elif self.anzahl_in_besitz[position.farbe] == 1:
-                if randint(1, 100) <= 80:
+            if self.geld > Spielfeld.feld[self.pos].preis:
+                if randint(1, 100) <= 50:
                     self.kaufen()
+
+                elif self.anzahl_in_besitz[position.farbe] == Spielfeld.feldhaeufigkeiten[position.farbe] - 1:
+                    self.kaufen()
+                    # Wahrscheinlichkeit ist höher wenn man schon eine Straße der Farbe besitzt
+                elif self.anzahl_in_besitz[position.farbe] == 1:
+                    if randint(1, 100) <= 80:
+                        self.kaufen()
         else:
             zeit += randint(30, 60)
-            self.kaufen()
+            if self.geld > Spielfeld.feld[self.pos].preis:
+                self.kaufen()
 
     def kaufen(self):
         global zeit
