@@ -25,8 +25,8 @@ class GUI:
         self.root.focus_force()
         self.root.title("Monopoly Simulation")
         # Fenster mittig zentrieren
-        w = 550
-        h = 260
+        w = 650
+        h = 290
         ws = self.root.winfo_screenwidth()
         hs = self.root.winfo_screenheight()
         x = (ws / 2) - (w / 2)

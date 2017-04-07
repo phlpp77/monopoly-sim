@@ -167,7 +167,8 @@ class Spieler:
         if self.buyrng is True:
             zeit += randint(30, 60)
             position = Spielfeld.feld[self.pos]
-            if self.geld > Spielfeld.feld[self.pos].preis:
+            #if self.geld > Spielfeld.feld[self.pos].preis:
+            if True:
                 if randint(1, 100) <= 50:
                     self.kaufen()
 
@@ -179,7 +180,8 @@ class Spieler:
                         self.kaufen()
         else:
             zeit += randint(30, 60)
-            if self.geld > Spielfeld.feld[self.pos].preis:
+            #if self.geld > Spielfeld.feld[self.pos].preis:
+            if True:
                 self.kaufen()
 
     def kaufen(self):
